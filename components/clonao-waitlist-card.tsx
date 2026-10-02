@@ -3,15 +3,17 @@
 import { FormEvent, useRef, useState } from "react";
 
 type Step = "entry" | "diagnosis" | "email" | "success";
+type DiagnosisStep = 1 | 2 | 3;
 
 export default function ClonaoWaitlistCard() {
   const [step, setStep] = useState<Step>("entry");
+  const [diagnosisStep, setDiagnosisStep] = useState<DiagnosisStep>(1);
   const [status, setStatus] = useState<"idle" | "error" | "joining">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [email, setEmail] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [desiredPositioning, setDesiredPositioning] = useState("");
-  const [biggestChallenge, setBiggestChallenge] = useState("");
+  const [desiredOutcome, setDesiredOutcome] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
 
   function beginDiagnosis() {
@@ -19,10 +21,14 @@ export default function ClonaoWaitlistCard() {
     setStep("diagnosis");
   }
 
-  function continueToEmail(event: FormEvent<HTMLFormElement>) {
+  function continueDiagnosis(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrorMessage("");
-    setStep("email");
+    if (diagnosisStep < 3) {
+      setDiagnosisStep((diagnosisStep + 1) as DiagnosisStep);
+    } else {
+      setStep("email");
+    }
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -53,7 +59,7 @@ export default function ClonaoWaitlistCard() {
         const diagnosisResponse = await fetch("/api/diagnosis", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ result_token: payload.diagnosis_token, linkedin_url: linkedinUrl, desired_positioning: desiredPositioning, biggest_challenge: biggestChallenge }),
+          body: JSON.stringify({ result_token: payload.diagnosis_token, linkedin_url: linkedinUrl, desired_positioning: desiredPositioning, biggest_challenge: desiredOutcome }),
         });
         const diagnosisPayload = await diagnosisResponse.json().catch(() => ({}));
         if (!diagnosisResponse.ok) throw new Error(diagnosisPayload.error || "Your signup was saved, but we couldn't save your diagnosis. Please try again.");
@@ -81,17 +87,20 @@ export default function ClonaoWaitlistCard() {
           </>
         ) : step === "diagnosis" ? (
           <>
-            <h2>Get your free Brand Diagnosis</h2>
-            <p className="clonao-waitlist-card__subline">Start with three quick questions while Clonao is still in early access.</p>
-            <form className="clonao-waitlist-card__diagnosis-form" onSubmit={continueToEmail}>
-              <label htmlFor="linkedin-url">LinkedIn profile URL</label>
-              <input id="linkedin-url" name="linkedin_url" type="url" placeholder="https://linkedin.com/in/your-name" required value={linkedinUrl} onChange={(event) => { setLinkedinUrl(event.target.value); setErrorMessage(""); }} />
-              <label htmlFor="desired-positioning">What do you want to be known for?</label>
-              <textarea id="desired-positioning" name="desired_positioning" rows={2} placeholder="Your point of view, expertise, or edge" required value={desiredPositioning} onChange={(event) => { setDesiredPositioning(event.target.value); setErrorMessage(""); }} />
-              <label htmlFor="biggest-challenge">What is your biggest challenge right now?</label>
-              <textarea id="biggest-challenge" name="biggest_challenge" rows={2} placeholder="What feels hardest about building your personal brand?" required value={biggestChallenge} onChange={(event) => { setBiggestChallenge(event.target.value); setErrorMessage(""); }} />
-              <button type="submit">Continue →</button>
-            </form>
+            <div className="clonao-waitlist-card__progress" aria-label={`Brand Diagnosis step ${diagnosisStep} of 3`}>
+              {[1, 2, 3].map((item) => <span key={item} className={item <= diagnosisStep ? "is-active" : ""} />)}
+              <span className="clonao-waitlist-card__progress-label">{diagnosisStep} of 3</span>
+            </div>
+            <div className="clonao-waitlist-card__question" key={diagnosisStep}>
+              <h2>Get your free Brand Diagnosis</h2>
+              <p className="clonao-waitlist-card__subline">Answer three quick questions while Clonao is still in early access.</p>
+              <form className="clonao-waitlist-card__diagnosis-form" onSubmit={continueDiagnosis}>
+                {diagnosisStep === 1 ? <><label htmlFor="linkedin-url">LinkedIn profile URL</label><input id="linkedin-url" name="linkedin_url" type="url" placeholder="https://linkedin.com/in/your-name" required value={linkedinUrl} onChange={(event) => { setLinkedinUrl(event.target.value); setErrorMessage(""); }} /></> : null}
+                {diagnosisStep === 2 ? <><label htmlFor="desired-positioning">What do you want to be known for?</label><input id="desired-positioning" name="desired_positioning" type="text" placeholder="Your point of view, expertise, or edge" required value={desiredPositioning} onChange={(event) => { setDesiredPositioning(event.target.value); setErrorMessage(""); }} /></> : null}
+                {diagnosisStep === 3 ? <><label htmlFor="desired-outcome">What do you want your personal brand to help you achieve?</label><input id="desired-outcome" name="desired_outcome" type="text" placeholder="The outcome you want to create" required value={desiredOutcome} onChange={(event) => { setDesiredOutcome(event.target.value); setErrorMessage(""); }} /></> : null}
+                <button type="submit">{diagnosisStep === 3 ? "Continue →" : "Continue"}</button>
+              </form>
+            </div>
           </>
         ) : (
           <>
@@ -109,7 +118,6 @@ export default function ClonaoWaitlistCard() {
             <p className={`clonao-waitlist-card__status${status === "error" ? " is-error" : ""}`} role="status">{status === "error" ? errorMessage : ""}</p>
           </>
         )}
-        {step !== "entry" && step !== "success" && errorMessage && step === "diagnosis" ? <p className="clonao-waitlist-card__status is-error" role="status">{errorMessage}</p> : null}
       </div>
     </section>
   );

@@ -174,3 +174,13 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
   .site-footer__links { width: 100%; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .site-footer__bottom { margin-top: 54px; }
 }
+.clonao-waitlist-card__progress { display: flex; align-items: center; justify-content: center; gap: 7px; min-height: 18px; margin-bottom: 20px; }
+.clonao-waitlist-card__progress > span:not(.clonao-waitlist-card__progress-label) { width: 28px; height: 3px; border-radius: 999px; background: rgb(255 255 255 / .28); transition: background .3s ease, box-shadow .3s ease; }
+.clonao-waitlist-card__progress > span.is-active { background: rgb(255 255 255 / .9); box-shadow: 0 0 8px rgb(196 235 255 / .45); }
+.clonao-waitlist-card__progress-label { margin-left: 7px; color: rgb(255 255 255 / .68); font-size: 11px; }
+.clonao-waitlist-card__question { animation: clonao-question-in .35s ease both; }
+@keyframes clonao-question-in { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+@media (max-width: 640px) {
+  .clonao-waitlist-card__progress { margin-bottom: 16px; }
+  .clonao-waitlist-card__progress > span:not(.clonao-waitlist-card__progress-label) { width: 22px; }
+}
