@@ -44,7 +44,7 @@ export async function POST(request: Request) {
         linkedin_url: linkedinUrl,
         desired_positioning: desiredPositioning,
         biggest_challenge: biggestChallenge,
-        diagnosis_status: "completed",
+        diagnosis_status: "pending",
         diagnosis_json: { linkedin_url: linkedinUrl, desired_positioning: desiredPositioning, biggest_challenge: biggestChallenge },
       })
       .eq("result_token", resultToken)

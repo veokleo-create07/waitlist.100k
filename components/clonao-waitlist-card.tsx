@@ -2,7 +2,7 @@
 
 import { FormEvent, useRef, useState } from "react";
 
-type Step = "entry" | "diagnosis" | "email" | "success";
+type Step = "entry" | "diagnosis" | "email" | "analysis" | "success";
 type DiagnosisStep = 1 | 2 | 3;
 
 export default function ClonaoWaitlistCard() {
@@ -63,7 +63,7 @@ export default function ClonaoWaitlistCard() {
         });
         const diagnosisPayload = await diagnosisResponse.json().catch(() => ({}));
         if (!diagnosisResponse.ok) throw new Error(diagnosisPayload.error || "Your signup was saved, but we couldn't save your diagnosis. Please try again.");
-        setStep("success");
+        setStep("analysis");
       })
       .catch((error: unknown) => {
         setStatus("error");
@@ -74,7 +74,13 @@ export default function ClonaoWaitlistCard() {
   return (
     <section className="clonao-waitlist-card" aria-live="polite">
       <div className="clonao-waitlist-card__content">
-        {step === "success" ? (
+        {step === "analysis" ? (
+          <div className="clonao-waitlist-card__analysis" aria-busy="true">
+            <span className="clonao-waitlist-card__spinner" aria-hidden="true" />
+            <h2>Analyzing your brand…</h2>
+            <p>Your Brand Diagnosis is being prepared.</p>
+          </div>
+        ) : step === "success" ? (
           <div className="clonao-waitlist-card__success">
             <h2>You’re in early access.</h2>
             <p>Your answers are saved for your free Brand Diagnosis. We’ll let you know when Clonao launches.</p>
@@ -104,15 +110,15 @@ export default function ClonaoWaitlistCard() {
           </>
         ) : (
           <>
-            <h2>Join Clonao early access</h2>
-            <p className="clonao-waitlist-card__subline">Enter your email to get notified when Clonao launches.</p>
+            <h2>Where should we send your Brand Diagnosis?</h2>
+            <p className="clonao-waitlist-card__subline">You’ll also be added to the Clonao early-access waitlist.</p>
             <form className="clonao-waitlist-card__form" onSubmit={submit} noValidate>
               <label className="sr-only" htmlFor="waitlist-email">Email address</label>
               <span className="clonao-waitlist-card__input-wrap">
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6.5h16v11H4z" /><path d="m4.5 7 7.5 6 7.5-6" /></svg>
                 <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onChange={(event) => { setEmail(event.target.value); setStatus("idle"); setErrorMessage(""); }} />
               </span>
-              <button type="submit" disabled={status === "joining"}>{status === "joining" ? "Joining…" : "Join early access"}</button>
+              <button type="submit" disabled={status === "joining"}>{status === "joining" ? "Analyzing…" : "Join the waitlist & analyze my brand"}</button>
             </form>
             <p className="clonao-waitlist-card__consent">By joining, you agree to receive Clonao waitlist, early-access and launch emails. Unsubscribe anytime. <a href="/privacy">Privacy Policy</a>.</p>
             <p className={`clonao-waitlist-card__status${status === "error" ? " is-error" : ""}`} role="status">{status === "error" ? errorMessage : ""}</p>
