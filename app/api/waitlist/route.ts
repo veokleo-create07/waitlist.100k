@@ -26,20 +26,22 @@ export async function POST(request: Request) {
     console.error("waitlist service configuration failed", error);
     return NextResponse.json({ error: "The waitlist service is not configured yet." }, { status: 503 });
   }
-  let signup: { id: string; email: string; confirmation_sent_at: string | null; status: string } | null = null;
+  let signup: { id: string; email: string; confirmation_sent_at: string | null; status: string; result_token: string } | null = null;
   let duplicate = false;
 
-  const insertResult = await supabase.from("waitlist").insert({ email, first_name: firstName, source, status: "pending" }).select("id,email,confirmation_sent_at,status").single();
+  const insertResult = await supabase.from("waitlist").insert({ email, first_name: firstName, source, status: "pending" }).select("id,email,confirmation_sent_at,status,result_token").single();
   if (!insertResult.error) signup = insertResult.data;
   else if (insertResult.error.code === "23505") {
     duplicate = true;
-    const existing = await supabase.from("waitlist").select("id,email,confirmation_sent_at,status").eq("email", email).maybeSingle();
+    const existing = await supabase.from("waitlist").select("id,email,confirmation_sent_at,status,result_token").eq("email", email).maybeSingle();
     if (existing.error) return NextResponse.json({ error: "We couldn't check your signup. Please try again." }, { status: 500 });
     signup = existing.data;
   } else return NextResponse.json({ error: "We couldn't save your signup. Please try again." }, { status: 500 });
 
   if (!signup) return NextResponse.json({ error: "We couldn't save your signup. Please try again." }, { status: 500 });
-  if (signup.confirmation_sent_at || signup.status === "unsubscribed") return NextResponse.json({ ok: true, duplicate: true });
+  if (signup.confirmation_sent_at || signup.status === "unsubscribed") {
+    return NextResponse.json({ ok: true, duplicate: true, diagnosis_token: signup.status === "unsubscribed" ? null : signup.result_token });
+  }
 
   try {
     await sendWaitlistConfirmation(signup.email);
@@ -50,5 +52,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Your signup was saved, but we couldn't send the confirmation. Please try again." }, { status: 502 });
   }
 
-  return NextResponse.json({ ok: true, duplicate });
+  return NextResponse.json({ ok: true, duplicate, diagnosis_token: signup.result_token });
 }
