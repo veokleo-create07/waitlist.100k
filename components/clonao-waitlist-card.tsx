@@ -1,18 +1,10 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import BrandDiagnosisResults, { BrandDiagnosis } from "./brand-diagnosis-results";
 
 type Step = "entry" | "diagnosis" | "email" | "analysis" | "results" | "success";
 type DiagnosisStep = 1 | 2 | 3;
-type BrandDiagnosis = {
-  current_signal: string;
-  biggest_gap: string;
-  strongest_opportunity: string;
-  missing_proof: string;
-  focus_next: string;
-  next_best_move: string;
-};
-
 const analysisStages = [
   "Reading your positioning",
   "Mapping your expertise",
@@ -139,21 +131,7 @@ export default function ClonaoWaitlistCard() {
             </>}
           </div>
         ) : step === "results" && diagnosis ? (
-          <div className="clonao-diagnosis-results">
-            <header className="clonao-diagnosis-results__header">
-              <p className="clonao-analysis-kicker">Your Brand Diagnosis</p>
-              <h2>Your brand, with a clearer next move.</h2>
-              <p>Here’s what Clonao found based on where your brand is now and where you want it to go.</p>
-            </header>
-            <div className="clonao-diagnosis-results__sections">
-              <article><h3>What you’re signaling now</h3><p>{diagnosis.current_signal}</p></article>
-              <article><h3>Your biggest positioning gap</h3><p>{diagnosis.biggest_gap}</p></article>
-              <article><h3>Your strongest opportunity</h3><p>{diagnosis.strongest_opportunity}</p></article>
-              <article><h3>What’s missing</h3><p>{diagnosis.missing_proof}</p></article>
-              <article><h3>What to focus on next</h3><p>{diagnosis.focus_next}</p></article>
-              <article className="is-emphasis"><p className="clonao-diagnosis-results__eyebrow">Your next best move</p><p>{diagnosis.next_best_move}</p></article>
-            </div>
-          </div>
+          <BrandDiagnosisResults diagnosis={diagnosis} />
         ) : step === "success" ? (
           <div className="clonao-waitlist-card__success">
             <h2>You’re in early access.</h2>

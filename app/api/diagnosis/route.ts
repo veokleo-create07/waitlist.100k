@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "../../../lib/supabase-admin";
 import { generateBrandDiagnosis } from "../../../lib/brand-diagnosis";
+import { sendDiagnosisReadyEmail } from "../../../lib/waitlist-email";
 
 export const runtime = "nodejs";
 
@@ -74,8 +75,32 @@ export async function POST(request: Request) {
 
   try {
     const diagnosis = await generateBrandDiagnosis({ linkedinUrl, desiredPositioning, desiredOutcome });
-    const completed = await supabase.from("waitlist").update({ diagnosis_json: diagnosis, diagnosis_status: "completed" }).eq("id", record.data.id).select("id").maybeSingle();
+    const completed = await supabase.from("waitlist").update({ diagnosis_json: diagnosis, diagnosis_status: "completed" }).eq("id", record.data.id).select("id,email,result_token").maybeSingle();
     if (completed.error || !completed.data) throw new Error("Could not save completed diagnosis.");
+
+    const claim = await supabase
+      .from("waitlist")
+      .update({ diagnosis_email_status: "sending" })
+      .eq("id", record.data.id)
+      .eq("diagnosis_status", "completed")
+      .eq("diagnosis_email_status", "pending")
+      .select("id,email,result_token")
+      .maybeSingle();
+
+    if (claim.error) {
+      console.error("brand diagnosis email claim failed", claim.error);
+    } else if (claim.data) {
+      try {
+        await sendDiagnosisReadyEmail(claim.data.email, claim.data.result_token, diagnosis);
+        const sent = await supabase.from("waitlist").update({ diagnosis_email_status: "sent", diagnosis_email_sent_at: new Date().toISOString() }).eq("id", record.data.id).eq("diagnosis_email_status", "sending");
+        if (sent.error) console.error("brand diagnosis email sent status update failed", sent.error);
+      } catch (emailError) {
+        console.error("brand diagnosis ready email failed", emailError);
+        const failedEmail = await supabase.from("waitlist").update({ diagnosis_email_status: "failed" }).eq("id", record.data.id).eq("diagnosis_email_status", "sending");
+        if (failedEmail.error) console.error("brand diagnosis email failed status update failed", failedEmail.error);
+      }
+    }
+
     return NextResponse.json({ ok: true, status: "completed", diagnosis });
   } catch (error) {
     console.error("brand diagnosis generation failed", error);
