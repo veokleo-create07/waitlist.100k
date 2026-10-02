@@ -3,26 +3,21 @@
 import { useEffect, useState } from "react";
 
 const navigation = [
-  ["scope", "Scope and Applicability"],
-  ["collect", "What Information Do We Collect?"],
-  ["use", "How Do We Use the Information We Collect?"],
-  ["email", "Email Communications"],
-  ["legal-basis", "Legal Basis for Processing"],
+  ["collect", "What We Collect"],
+  ["use", "How We Use Your Information"],
+  ["emails", "Emails"],
   ["storage", "How We Store Your Information"],
-  ["sell", "Do We Sell Your Personal Information?"],
-  ["share", "When May We Share Information?"],
-  ["international", "International Data Processing"],
-  ["retention", "Data Retention"],
-  ["security", "How Do We Protect Your Information?"],
-  ["cookies", "Cookies and Tracking Technologies"],
-  ["rights", "Your Privacy Rights"],
-  ["children", "Children's Privacy"],
-  ["changes", "Changes to This Privacy Policy"],
-  ["contact", "Contact Us"],
+  ["retention", "How Long We Keep Your Information"],
+  ["choices", "Your Choices"],
+  ["security", "Security"],
+  ["cookies", "Cookies"],
+  ["scope", "Current Scope"],
+  ["changes", "Changes to This Policy"],
+  ["contact", "Contact"],
 ] as const;
 
 export default function PrivacyPage() {
-  const [activeSection, setActiveSection] = useState("scope");
+  const [activeSection, setActiveSection] = useState("collect");
 
   useEffect(() => {
     const headings = navigation.map(([id]) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
@@ -50,42 +45,31 @@ export default function PrivacyPage() {
 
           <div className="privacy-prose">
             <p><strong>Your privacy matters to us.</strong></p>
-            <p>This Privacy Policy explains how <strong>Clonao</strong> (“Clonao,” “we,” “us,” or “our”) collects, uses, stores, and protects information when you visit <strong>clonao.com</strong>, join our waitlist, or otherwise interact with our website.</p>
-            <p>At this stage, Clonao is operating as an early-access software product. The website is primarily used to provide information about Clonao and allow interested users to join the waitlist.</p>
+            <p>This Privacy Policy explains how Clonao collects, uses, stores, and protects information when you visit clonao.com or join our waitlist.</p>
             <p>We do not sell your personal information.</p>
-            <p>For questions regarding this Privacy Policy or your data, contact us at <strong>team@clonao.com</strong>.</p>
+            <p>For any questions or concerns, contact us at <a href="mailto:team@clonao.com">team@clonao.com</a>.</p>
 
-            <section><h2 id="scope">Scope and Applicability</h2><p>This Privacy Policy applies to information collected through:</p><ul><li>clonao.com</li><li>the Clonao waitlist</li><li>emails sent by Clonao</li><li>other pages that link to this Privacy Policy</li></ul><h3>Current Scope of This Policy</h3><p>This Privacy Policy applies to the current Clonao waitlist website and related launch communications.</p><p>Before Clonao launches user accounts, LinkedIn data integrations, document uploads, AI processing, payments, analytics, or other full-product functionality, this Privacy Policy will be updated or replaced to reflect the additional data processing involved.</p></section>
+            <section><h2 id="collect">What We Collect</h2><p>When you join the Clonao waitlist, we collect:</p><ul><li>your email address</li><li>the date you joined</li><li>your waitlist or subscription status</li><li>the source through which you joined, where available</li></ul><p>Our website and infrastructure providers may also process limited technical information needed to operate and secure the site, such as IP address, browser information, device information, timestamps, and basic server logs.</p><p>We do not currently collect payment details, LinkedIn credentials, uploaded documents, or other full-product data through the waitlist.</p></section>
 
-            <section><h2 id="collect">What Information Do We Collect?</h2><h3>Information you provide</h3><p>When you join the Clonao waitlist, we currently collect:</p><ul><li>your email address</li><li>the date and time you joined</li><li>your subscription or waitlist status</li><li>the source through which you joined, where applicable</li></ul><p>We currently do not require you to provide your name, payment details, LinkedIn credentials, documents, personal-brand data, or other account information simply to join the waitlist.</p><h3>Automatically collected information</h3><p>When you access the website, our hosting and infrastructure providers may automatically process limited technical information necessary to operate and secure the site, such as:</p><ul><li>IP address</li><li>browser type</li><li>device information</li><li>request information</li><li>timestamps</li><li>basic server logs</li></ul><p>We may introduce privacy-conscious analytics in the future to better understand how visitors use the website.</p></section>
+            <section><h2 id="use">How We Use Your Information</h2><p>We use your information to:</p><ul><li>add you to the Clonao waitlist</li><li>confirm your signup</li><li>notify you about early access</li><li>send launch announcements</li><li>send closely related Clonao product updates</li><li>operate and secure the website</li><li>respond to support or privacy requests</li></ul><p>We do not use your waitlist email for unrelated advertising.</p></section>
 
-            <section><h2 id="use">How Do We Use the Information We Collect?</h2><p>We use your information to:</p><ul><li>add you to the Clonao waitlist</li><li>confirm your waitlist registration</li><li>notify you when early access becomes available</li><li>send Clonao launch announcements</li><li>send closely related Clonao product updates</li><li>share important development or availability information</li><li>maintain and secure the website</li><li>prevent abuse or fraudulent activity</li><li>respond to privacy or support requests</li></ul><p>Waitlist communications are limited to waitlist, early-access, launch, and closely related Clonao product communications.</p><p>We do not use your waitlist email address for unrelated advertising or unrelated promotional campaigns.</p></section>
+            <section><h2 id="emails">Emails</h2><p>By joining the waitlist, you may receive:</p><ul><li>waitlist confirmation emails</li><li>early-access invitations</li><li>launch updates</li><li>closely related Clonao product updates</li></ul><p>You can unsubscribe at any time using the unsubscribe option included in our emails.</p><p>Once your unsubscribe request is processed, we will stop sending you non-essential emails.</p><p>You can also contact <a href="mailto:team@clonao.com">team@clonao.com</a> at any time.</p></section>
 
-            <section><h2 id="email">Email Communications</h2><p>When you join the waitlist, you may receive:</p><ul><li>waitlist confirmation emails</li><li>early-access invitations</li><li>launch announcements</li><li>closely related Clonao product updates</li></ul><p>You can unsubscribe from these communications at any time using the unsubscribe mechanism included in our emails.</p><p>You may also contact <strong>team@clonao.com</strong>.</p><p>Once your unsubscribe request is processed, we will stop sending you non-essential marketing or product-update emails.</p><p>You may object at any time to the processing of your personal data for direct marketing purposes.</p></section>
+            <section><h2 id="storage">How We Store Your Information</h2><p>We currently use third-party services to operate the waitlist.</p><h3>Supabase</h3><p>We use Supabase to store waitlist information, including your email address and subscription status.</p><h3>Resend</h3><p>We use Resend to send waitlist confirmations, early-access emails, launch announcements, and related product updates.</p><p>We may also use hosting and infrastructure providers required to operate clonao.com.</p><p>Some of these providers may process data outside Albania. Where required, appropriate data-protection safeguards are used.</p></section>
 
-            <section><h2 id="legal-basis">Legal Basis for Processing</h2><p><strong>Consent</strong><br />We rely on your consent to collect your email address and send waitlist, early-access, launch, and closely related Clonao product communications.</p><p><strong>Legitimate interests</strong><br />We may rely on legitimate interests for limited technical processing necessary to operate, secure, troubleshoot, and protect the website, including basic server logs, fraud prevention, and abuse prevention.</p><p><strong>Legal obligations</strong><br />We may process information where required to comply with applicable law or lawful requests.</p><p>You may withdraw your consent at any time by using the unsubscribe mechanism in our emails or by contacting <strong>team@clonao.com</strong>.</p></section>
+            <section><h2 id="retention">How Long We Keep Your Information</h2><p>We keep your waitlist information while you remain subscribed and for up to 12 months after Clonao’s public launch, unless you ask us to delete it earlier.</p><p>If you unsubscribe, we may keep a limited record of your email address and unsubscribe status so we do not accidentally contact you again.</p><p>Information that is no longer needed may be deleted or anonymized.</p></section>
 
-            <section><h2 id="storage">How We Store Your Information</h2><p>Clonao currently uses third-party infrastructure providers to operate the website and waitlist.</p><h3>Supabase</h3><p>We use Supabase to store waitlist information, including email addresses and subscription status.</p><h3>Resend</h3><p>We use Resend to send waitlist confirmations, early-access emails, launch announcements, and related Clonao communications.</p><h3>Hosting and infrastructure</h3><p>We may use cloud hosting, content-delivery, security, and infrastructure providers required to operate clonao.com.</p><p>These providers may process information on our behalf only as necessary to provide their services.</p><p>Clonao uses third-party service providers that process information on our behalf. Where required, we rely on applicable data-processing terms or data-processing agreements with these providers.</p></section>
+            <section><h2 id="choices">Your Choices</h2><p>You may contact us to:</p><ul><li>access information we hold about you</li><li>correct inaccurate information</li><li>request deletion of your information</li><li>withdraw your consent</li><li>unsubscribe from Clonao emails</li><li>raise a concern about how your information is handled</li></ul><p>Contact us at:</p><p><a href="mailto:team@clonao.com">team@clonao.com</a></p></section>
 
-            <section><h2 id="sell">Do We Sell Your Personal Information?</h2><p><strong>No.</strong></p><p>Clonao does not sell personal information to advertisers, data brokers, or other third parties.</p><p>We do not provide your waitlist email address to other companies for their own independent advertising purposes.</p></section>
+            <section><h2 id="security">Security</h2><p>We use reasonable technical and organizational measures designed to protect your information from unauthorized access, loss, misuse, alteration, or disclosure.</p><p>No online system can guarantee absolute security.</p></section>
 
-            <section><h2 id="share">When May We Share Information?</h2><p>We may share limited personal information with service providers that help us operate Clonao, including providers of:</p><ul><li>database infrastructure</li><li>website hosting</li><li>email delivery</li><li>security</li><li>analytics, if introduced</li><li>technical infrastructure</li></ul><p>We may also disclose information where required by law, court order, regulatory requirement, or another valid legal process.</p></section>
+            <section><h2 id="cookies">Cookies</h2><p>Clonao does not currently use advertising cookies on the waitlist website.</p><p>The website may use technologies required for basic functionality, security, and website delivery.</p><p>If we introduce additional analytics or tracking technologies in the future, this Privacy Policy will be updated where necessary.</p></section>
 
-            <section><h2 id="international">International Data Processing</h2><p>Clonao uses service providers, including Supabase, Resend, and hosting or infrastructure providers, that may process or store personal data outside Albania.</p><p>Where personal data is transferred to another country, Clonao will use appropriate safeguards required by applicable data-protection law, which may include contractual safeguards, standard contractual clauses, adequacy decisions, or other lawful transfer mechanisms.</p><p>We review the privacy and data-processing terms of our service providers and use providers that offer appropriate contractual and technical protections for personal data.</p></section>
+            <section><h2 id="scope">Current Scope</h2><p>This Privacy Policy covers the current Clonao waitlist website and related launch communications.</p><p>Before Clonao launches functionality such as user accounts, LinkedIn integrations, uploads, AI processing, payments, or additional analytics, this policy will be updated to reflect those features.</p></section>
 
-            <section><h2 id="retention">Data Retention</h2><p>We retain waitlist information while you remain subscribed and for up to 12 months after Clonao’s public launch, unless you withdraw consent earlier or applicable law requires a different retention period.</p><p>If you unsubscribe, we may retain a limited record of your email address and unsubscribe status solely to ensure that we do not send you further marketing or product-update emails.</p><p>Information that is no longer required will be deleted or anonymized where appropriate.</p></section>
+            <section><h2 id="changes">Changes to This Policy</h2><p>We may update this Privacy Policy as Clonao develops.</p><p>When we make changes, we will update the date at the top of this page.</p></section>
 
-            <section><h2 id="security">How Do We Protect Your Information?</h2><p>We use reasonable technical and organizational measures intended to protect information against:</p><ul><li>unauthorized access</li><li>disclosure</li><li>alteration</li><li>loss</li><li>misuse</li><li>destruction</li></ul><p>However, no online system or electronic storage method can guarantee absolute security.</p></section>
-
-            <section><h2 id="cookies">Cookies and Tracking Technologies</h2><p>Clonao does not currently use advertising cookies on the waitlist website.</p><p>The site may use technologies that are strictly necessary for:</p><ul><li>website operation</li><li>security</li><li>network delivery</li><li>basic functionality</li></ul><p>If we later introduce analytics, advertising technologies, or other non-essential cookies, we will update this Privacy Policy and implement additional controls where required.</p></section>
-
-            <section><h2 id="rights">Your Privacy Rights</h2><p>Depending on applicable law, you may have rights relating to your personal information, including the right to:</p><ul><li>request access to your information</li><li>request correction of inaccurate information</li><li>request deletion</li><li>request restriction of processing</li><li>object to certain processing</li><li>withdraw consent</li><li>request portability where applicable</li></ul><p>You also have the right to lodge a complaint with the Right to Information and Personal Data Protection Commissioner of Albania.</p><p><strong>Right to Information and Personal Data Protection Commissioner</strong><br />Albania<br />Email: <a href="mailto:info@idp.al">info@idp.al</a></p><p>To exercise a privacy right, contact:</p><p><strong>team@clonao.com</strong></p><p>We may need to verify your request before taking action.</p></section>
-
-            <section><h2 id="children">Privacy of Users Under 16</h2><p>Clonao is not intended for individuals under the age of 16.</p><p>We do not knowingly collect personal information from individuals under 16 through the waitlist.</p><p>If you believe that someone under 16 has provided personal information to Clonao, contact us at <strong>team@clonao.com</strong> and we will review and, where appropriate, delete the information.</p></section>
-
-            <section><h2 id="changes">Changes to This Privacy Policy</h2><p>Clonao is still being developed.</p><p>As the product grows, we may update this Privacy Policy to reflect:</p><ul><li>new product functionality</li><li>accounts and authentication</li><li>LinkedIn integrations</li><li>user uploads</li><li>Brand Graph data</li><li>AI processing</li><li>payments</li><li>analytics</li><li>additional service providers</li></ul><p>When changes are made, we will update the date shown at the top of this page.</p><p>Material changes may also be communicated through the website or email where appropriate.</p></section>
-
-            <section><h2 id="contact">Contact Us</h2><p>For questions, requests, or concerns relating to privacy or your personal information:</p><p><strong>Clonao</strong><br />Albania<br /><strong>team@clonao.com</strong></p></section>
+            <section><h2 id="contact">Contact</h2><p>If you have any questions, concerns, or requests regarding your information or this Privacy Policy, contact:</p><p>Clonao<br /><a href="mailto:team@clonao.com">team@clonao.com</a></p></section>
           </div>
         </article>
 
