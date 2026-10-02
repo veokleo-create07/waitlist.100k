@@ -3,4 +3,5 @@ dist/
 .next/
 .env*
 !.env.example
+*.tsbuildinfo
 .DS_Store
