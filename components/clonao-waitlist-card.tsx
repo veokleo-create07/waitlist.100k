@@ -38,10 +38,6 @@ export default function ClonaoWaitlistCard() {
   return (
     <section className="clonao-waitlist-card" aria-live="polite">
       <div className="clonao-waitlist-card__content">
-        <a className="clonao-waitlist-card__brand" href="#top" aria-label="Clonao home">
-          <img src="/clonao-logo.png" alt="" aria-hidden="true" />
-          <span>Clonao</span>
-        </a>
         {status === "success" ? (
           <div className="clonao-waitlist-card__success">
             <h2>You’re on the list.</h2>
