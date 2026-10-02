@@ -4,6 +4,14 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 
 type Step = "entry" | "diagnosis" | "email" | "analysis" | "results" | "success";
 type DiagnosisStep = 1 | 2 | 3;
+type BrandDiagnosis = {
+  current_signal: string;
+  biggest_gap: string;
+  strongest_opportunity: string;
+  missing_proof: string;
+  focus_next: string;
+  next_best_move: string;
+};
 
 const analysisStages = [
   "Reading your positioning",
@@ -27,6 +35,7 @@ export default function ClonaoWaitlistCard() {
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [desiredPositioning, setDesiredPositioning] = useState("");
   const [desiredOutcome, setDesiredOutcome] = useState("");
+  const [diagnosis, setDiagnosis] = useState<BrandDiagnosis | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -99,6 +108,8 @@ export default function ClonaoWaitlistCard() {
         });
         const diagnosisPayload = await diagnosisResponse.json().catch(() => ({}));
         if (!diagnosisResponse.ok) throw new Error(diagnosisPayload.error || "Your signup was saved, but we couldn't save your diagnosis. Please try again.");
+        if (!diagnosisPayload.diagnosis) throw new Error("Your signup was saved, but we couldn't prepare your diagnosis. Please try again.");
+        setDiagnosis(diagnosisPayload.diagnosis as BrandDiagnosis);
         setStep("analysis");
       })
       .catch((error: unknown) => {
@@ -127,12 +138,21 @@ export default function ClonaoWaitlistCard() {
               </ul>
             </>}
           </div>
-        ) : step === "results" ? (
-          <div className="clonao-waitlist-card__results">
-            <div className="clonao-results-mark" aria-hidden="true"><img src="/clonao-logo.png" alt="" /></div>
-            <p className="clonao-analysis-kicker">Your personalized readout</p>
-            <h2>Your Brand Diagnosis is ready.</h2>
-            <p>Your answers have been shaped into a clear next step for your personal brand.</p>
+        ) : step === "results" && diagnosis ? (
+          <div className="clonao-diagnosis-results">
+            <header className="clonao-diagnosis-results__header">
+              <p className="clonao-analysis-kicker">Your Brand Diagnosis</p>
+              <h2>Your brand, with a clearer next move.</h2>
+              <p>Here’s what Clonao found based on where your brand is now and where you want it to go.</p>
+            </header>
+            <div className="clonao-diagnosis-results__sections">
+              <article><h3>What you’re signaling now</h3><p>{diagnosis.current_signal}</p></article>
+              <article><h3>Your biggest positioning gap</h3><p>{diagnosis.biggest_gap}</p></article>
+              <article><h3>Your strongest opportunity</h3><p>{diagnosis.strongest_opportunity}</p></article>
+              <article><h3>What’s missing</h3><p>{diagnosis.missing_proof}</p></article>
+              <article><h3>What to focus on next</h3><p>{diagnosis.focus_next}</p></article>
+              <article className="is-emphasis"><p className="clonao-diagnosis-results__eyebrow">Your next best move</p><p>{diagnosis.next_best_move}</p></article>
+            </div>
           </div>
         ) : step === "success" ? (
           <div className="clonao-waitlist-card__success">

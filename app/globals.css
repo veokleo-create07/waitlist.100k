@@ -89,6 +89,109 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 .clonao-results-mark img { width: 44px; height: 38px; object-fit: contain; filter: drop-shadow(0 0 8px rgb(255 255 255 / .42)); }
 .clonao-waitlist-card__results h2 { margin-bottom: 12px; }
 .clonao-waitlist-card__results > p:last-child { margin: 0 auto; max-width: 360px; color: rgb(225 240 255 / .78); font-size: 14px; line-height: 1.6; }
+
+.clonao-diagnosis-results {
+  padding: 8px 4px 10px;
+  text-align: left;
+}
+
+.clonao-diagnosis-results__header {
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgb(255 255 255 / .25);
+}
+
+.clonao-diagnosis-results__header h2 {
+  margin: 10px 0 14px;
+  text-align: left;
+  font-size: clamp(30px, 4.5vw, 44px);
+  line-height: 1.08;
+}
+
+.clonao-diagnosis-results__header > p:last-child {
+  margin: 0;
+  max-width: 540px;
+  color: rgb(235 246 255 / .76);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.clonao-diagnosis-results__sections {
+  display: flex;
+  flex-direction: column;
+}
+
+.clonao-diagnosis-results__sections article {
+  padding: 26px 0;
+  border-bottom: 1px solid rgb(255 255 255 / .19);
+}
+
+.clonao-diagnosis-results__sections article h3 {
+  margin: 0 0 10px;
+  color: rgb(221 241 255 / .78);
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.clonao-diagnosis-results__sections article p:not(.clonao-diagnosis-results__eyebrow) {
+  margin: 0;
+  color: white;
+  font-size: clamp(17px, 2.2vw, 21px);
+  line-height: 1.55;
+  letter-spacing: -.025em;
+}
+
+.clonao-diagnosis-results__sections article.is-emphasis {
+  margin: 26px -16px 0;
+  padding: 28px 20px;
+  border: 1px solid rgb(174 225 255 / .5);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgb(154 218 255 / .2), rgb(44 126 219 / .16));
+  box-shadow: 0 14px 34px rgb(9 73 164 / .2), inset 0 1px rgb(255 255 255 / .25);
+}
+
+.clonao-diagnosis-results__sections article.is-emphasis .clonao-diagnosis-results__eyebrow {
+  margin: 0 0 12px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.clonao-diagnosis-results__sections article.is-emphasis p:last-child {
+  font-size: clamp(20px, 2.8vw, 27px);
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .clonao-diagnosis-results {
+    padding: 0;
+  }
+
+  .clonao-diagnosis-results__header {
+    padding-bottom: 24px;
+  }
+
+  .clonao-diagnosis-results__header h2 {
+    font-size: 30px;
+  }
+
+  .clonao-diagnosis-results__sections article {
+    padding: 21px 0;
+  }
+
+  .clonao-diagnosis-results__sections article p:not(.clonao-diagnosis-results__eyebrow) {
+    font-size: 17px;
+  }
+
+  .clonao-diagnosis-results__sections article.is-emphasis {
+    margin: 22px -4px 0;
+    padding: 24px 16px;
+  }
+}
 @keyframes clonao-analysis-pulse { 0%, 100% { transform: scale(.96); box-shadow: 0 0 28px rgb(132 211 255 / .26), inset 0 0 24px rgb(255 255 255 / .16); } 50% { transform: scale(1.03); box-shadow: 0 0 46px rgb(132 211 255 / .44), inset 0 0 28px rgb(255 255 255 / .22); } }
 @keyframes clonao-node-in { 0%, 100% { opacity: .4; transform: scale(.75); } 50% { opacity: 1; transform: scale(1.3); } }
 @media (max-width: 640px) {
