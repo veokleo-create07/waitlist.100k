@@ -67,10 +67,6 @@ export default function Home() {
           </>}
         </section>
 
-        <div className="demo-wrap reveal" id="product">
-          <div className="window-lights" aria-hidden="true"><i /><i /><i /></div>
-          <img src="/clonao-demo.png" alt="Clonao dashboard showing next best moves, strategy, analytics, and Brand Graph" />
-        </div>
       </section>
     </main>
   );
