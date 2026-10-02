@@ -30,6 +30,8 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 .waitlist-form button:hover { filter: brightness(1.08); transform: translateY(-1px); }
 .waitlist-form button:disabled { opacity: .75; cursor: wait; }
 .waitlist-form button:focus-visible { outline: 3px solid rgb(175 225 255 / .8); outline-offset: 2px; }
+.waitlist-consent { margin: 12px 0 0 !important; color: rgb(225 240 255 / .62) !important; font-size: 11px !important; line-height: 1.5 !important; text-align: left; }
+.waitlist-consent a { color: rgb(235 247 255 / .88); text-decoration: underline; text-underline-offset: 2px; }
 .form-status { min-height: 18px; margin: 8px 0 0 !important; color: #b8e0ff !important; font-size: 13px !important; }
 .form-status.error { color: #ffd4d4 !important; }
 .success-message { margin: 6px 0 0 !important; }

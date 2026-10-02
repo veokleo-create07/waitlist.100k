@@ -65,6 +65,7 @@ export default function Home() {
               <input ref={emailRef} id="email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onChange={(event) => { setEmail(event.target.value); setStatus("idle"); setErrorMessage(""); }} />
               <button type="submit" disabled={status === "joining"}>{status === "joining" ? "Joining…" : "Join the waitlist"}</button>
             </form>
+            <p className="waitlist-consent">By joining, you agree to receive Clonao waitlist, early-access and launch emails. Unsubscribe anytime. <a href="/privacy">Privacy Policy</a>.</p>
             <p className={`form-status${status === "error" ? " error" : ""}`} role="status">{status === "error" ? errorMessage : ""}</p>
           </>}
         </section>
