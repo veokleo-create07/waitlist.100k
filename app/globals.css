@@ -32,6 +32,13 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 .waitlist-form button:focus-visible { outline: 3px solid rgb(175 225 255 / .8); outline-offset: 2px; }
 .waitlist-consent { margin: 12px 0 0 !important; color: rgb(225 240 255 / .62) !important; font-size: 11px !important; line-height: 1.5 !important; text-align: left; }
 .waitlist-consent a { color: rgb(235 247 255 / .88); text-decoration: underline; text-underline-offset: 2px; }
+.unsubscribe-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; color: #f7faff; background: #111316; }
+.unsubscribe-content { width: min(100%, 520px); text-align: center; }
+.unsubscribe-brand { display: inline-flex; align-items: center; gap: 9px; color: white; font-size: 19px; font-weight: 600; letter-spacing: -.04em; }
+.unsubscribe-brand img { width: 35px; height: 30px; object-fit: contain; }
+.unsubscribe-content h1 { margin-top: 56px; font-size: clamp(36px, 7vw, 58px); }
+.unsubscribe-content p { margin: 18px auto 28px; color: #a7bbd4; font-size: 16px; line-height: 1.65; }
+.unsubscribe-home { color: #9bd4ff; text-decoration: underline; text-underline-offset: 3px; }
 .form-status { min-height: 18px; margin: 8px 0 0 !important; color: #b8e0ff !important; font-size: 13px !important; }
 .form-status.error { color: #ffd4d4 !important; }
 .success-message { margin: 6px 0 0 !important; }
