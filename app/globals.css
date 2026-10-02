@@ -99,6 +99,12 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
   padding-bottom: 30px;
   border-bottom: 1px solid rgb(255 255 255 / .25);
 }
+.clonao-diagnosis-results__greeting { margin: 0 0 18px; color: white; font-size: 18px; line-height: 1.4; }
+.clonao-diagnosis-identity { display: flex; align-items: center; gap: 13px; margin: 0 0 26px; padding: 0 0 22px; border-bottom: 1px solid rgb(255 255 255 / .18); }
+.clonao-diagnosis-identity img { width: 52px; height: 52px; flex: 0 0 auto; border: 1px solid rgb(255 255 255 / .42); border-radius: 50%; object-fit: cover; }
+.clonao-diagnosis-identity div { min-width: 0; display: grid; gap: 3px; }
+.clonao-diagnosis-identity strong { color: white; font-size: 17px; line-height: 1.3; }
+.clonao-diagnosis-identity span { overflow: hidden; color: rgb(225 240 255 / .76); font-size: 13px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
 
 .clonao-diagnosis-results__header h2 {
   margin: 10px 0 14px;

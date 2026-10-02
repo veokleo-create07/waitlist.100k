@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import BrandDiagnosisResults, { BrandDiagnosis } from "./brand-diagnosis-results";
+import type { LinkedInIdentity } from "../lib/linkedin-profile";
 
 type Step = "entry" | "diagnosis" | "email" | "analysis" | "results" | "success";
 type DiagnosisStep = 1 | 2 | 3;
@@ -28,6 +29,7 @@ export default function ClonaoWaitlistCard() {
   const [desiredPositioning, setDesiredPositioning] = useState("");
   const [desiredOutcome, setDesiredOutcome] = useState("");
   const [diagnosis, setDiagnosis] = useState<BrandDiagnosis | null>(null);
+  const [profile, setProfile] = useState<LinkedInIdentity | null>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -102,6 +104,7 @@ export default function ClonaoWaitlistCard() {
         if (!diagnosisResponse.ok) throw new Error(diagnosisPayload.error || "Your signup was saved, but we couldn't save your diagnosis. Please try again.");
         if (!diagnosisPayload.diagnosis) throw new Error("Your signup was saved, but we couldn't prepare your diagnosis. Please try again.");
         setDiagnosis(diagnosisPayload.diagnosis as BrandDiagnosis);
+        setProfile((diagnosisPayload.profile as LinkedInIdentity | undefined) || null);
         setStep("analysis");
       })
       .catch((error: unknown) => {
@@ -131,7 +134,7 @@ export default function ClonaoWaitlistCard() {
             </>}
           </div>
         ) : step === "results" && diagnosis ? (
-          <BrandDiagnosisResults diagnosis={diagnosis} />
+          <BrandDiagnosisResults diagnosis={diagnosis} profile={profile} />
         ) : step === "success" ? (
           <div className="clonao-waitlist-card__success">
             <h2>You’re in early access.</h2>

@@ -21,12 +21,13 @@ const diagnosisSchema = {
   },
 } as const;
 
-const systemPrompt = `You are Clonao's Brand Diagnosis engine. Generate a concise, specific diagnosis from the user's supplied inputs.
+const systemPrompt = `You are Clonao's Brand Diagnosis engine. Generate a concise, specific diagnosis from the user's supplied inputs and any reliably extracted public LinkedIn metadata.
 
 Rules:
 - Compare where the brand appears to be now with where the user wants it to go, then explain the missing bridge.
-- The LinkedIn URL is only a reference supplied by the user. Do not claim that you viewed the profile, its posts, experience, audience, or proof.
-- Treat the user's positioning and desired outcome as observed information. Clearly label reasonable conclusions as "Inference:" and observed inputs as "Observed:" when relevant.
+- Only treat supplied LinkedIn metadata as observed when it is present. Do not claim to have viewed profile posts, experience, audience, or proof unless that exact information is supplied.
+- Compare the supplied profile context with the user's desired positioning and outcome. If the headline and goal point in different directions, explicitly identify that mismatch.
+- Treat the user's positioning, desired outcome, and extracted profile fields as observed information. Clearly label reasonable conclusions as "Inference:" and observed inputs as "Observed:" when relevant.
 - Never invent proof, experience, credentials, clients, results, audience, or industry authority.
 - Avoid generic advice, motivational filler, and vague recommendations such as posting more consistently.
 - Keep every field concise: one or two sentences, with no markdown lists.
@@ -40,7 +41,7 @@ function isBrandDiagnosis(value: unknown): value is BrandDiagnosis {
   return Object.keys(diagnosisSchema.properties).every((key) => typeof record[key] === "string" && record[key].trim().length > 0 && record[key].length <= 1200);
 }
 
-export async function generateBrandDiagnosis(input: { linkedinUrl: string; desiredPositioning: string; desiredOutcome: string }) {
+export async function generateBrandDiagnosis(input: { linkedinUrl: string; desiredPositioning: string; desiredOutcome: string; profile?: LinkedInIdentity }) {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("Missing OPENAI_API_KEY.");
 
@@ -52,7 +53,7 @@ export async function generateBrandDiagnosis(input: { linkedinUrl: string; desir
       temperature: 0.2,
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: JSON.stringify({ linkedin_profile_url: input.linkedinUrl, wants_to_be_known_for: input.desiredPositioning, wants_brand_to_help_achieve: input.desiredOutcome }) },
+        { role: "user", content: JSON.stringify({ linkedin_profile_url: input.linkedinUrl, linkedin_profile_context: input.profile || { profile_url: input.linkedinUrl }, wants_to_be_known_for: input.desiredPositioning, wants_brand_to_help_achieve: input.desiredOutcome }) },
       ],
       response_format: { type: "json_schema", json_schema: { name: "brand_diagnosis", strict: true, schema: diagnosisSchema } },
     }),
@@ -68,3 +69,4 @@ export async function generateBrandDiagnosis(input: { linkedinUrl: string; desir
   if (!isBrandDiagnosis(parsed)) throw new Error("OpenAI returned an invalid diagnosis shape.");
   return parsed;
 }
+import type { LinkedInIdentity } from "./linkedin-profile";

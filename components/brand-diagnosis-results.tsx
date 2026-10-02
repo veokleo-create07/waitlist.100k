@@ -7,10 +7,17 @@ export type BrandDiagnosis = {
   next_best_move: string;
 };
 
-export default function BrandDiagnosisResults({ diagnosis }: { diagnosis: BrandDiagnosis }) {
+export default function BrandDiagnosisResults({ diagnosis, profile }: { diagnosis: BrandDiagnosis; profile?: LinkedInIdentity | null }) {
   return (
     <div className="clonao-diagnosis-results">
       <header className="clonao-diagnosis-results__header">
+        {profile?.first_name ? <p className="clonao-diagnosis-results__greeting">Hey {profile.first_name},</p> : null}
+        {profile && (profile.profile_image_url || profile.full_name || profile.headline) ? (
+          <div className="clonao-diagnosis-identity">
+            {profile.profile_image_url ? <img src={profile.profile_image_url} alt="" /> : null}
+            <div><strong>{profile.full_name || ""}</strong>{profile.headline ? <span>{profile.headline}</span> : null}</div>
+          </div>
+        ) : null}
         <p className="clonao-analysis-kicker">Your Brand Diagnosis</p>
         <h2>Your brand, with a clearer next move.</h2>
         <p>Here’s what Clonao found based on where your brand is now and where you want it to go.</p>
@@ -26,3 +33,4 @@ export default function BrandDiagnosisResults({ diagnosis }: { diagnosis: BrandD
     </div>
   );
 }
+import type { LinkedInIdentity } from "../lib/linkedin-profile";

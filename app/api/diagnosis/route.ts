@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "../../../lib/supabase-admin";
 import { generateBrandDiagnosis } from "../../../lib/brand-diagnosis";
 import { sendDiagnosisReadyEmail } from "../../../lib/waitlist-email";
+import { extractLinkedInIdentity } from "../../../lib/linkedin-profile";
 
 export const runtime = "nodejs";
 
@@ -39,6 +40,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please complete all three fields with a valid LinkedIn profile URL." }, { status: 400 });
   }
 
+  const profile = await extractLinkedInIdentity(linkedinUrl);
+
   let supabase: ReturnType<typeof getSupabaseAdmin>;
   try {
     supabase = getSupabaseAdmin();
@@ -51,6 +54,14 @@ export async function POST(request: Request) {
     .from("waitlist")
     .update({
       linkedin_url: linkedinUrl,
+      linkedin_profile_url: profile.profile_url,
+      linkedin_first_name: profile.first_name || null,
+      linkedin_full_name: profile.full_name || null,
+      linkedin_headline: profile.headline || null,
+      linkedin_about: profile.about || null,
+      linkedin_current_role: profile.current_role || null,
+      linkedin_company: profile.company || null,
+      linkedin_profile_image_url: profile.profile_image_url || null,
       desired_positioning: desiredPositioning,
       biggest_challenge: desiredOutcome,
       diagnosis_status: "pending",
@@ -74,7 +85,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const diagnosis = await generateBrandDiagnosis({ linkedinUrl, desiredPositioning, desiredOutcome });
+    const diagnosis = await generateBrandDiagnosis({ linkedinUrl, desiredPositioning, desiredOutcome, profile });
     const completed = await supabase.from("waitlist").update({ diagnosis_json: diagnosis, diagnosis_status: "completed" }).eq("id", record.data.id).select("id,email,result_token").maybeSingle();
     if (completed.error || !completed.data) throw new Error("Could not save completed diagnosis.");
 
@@ -91,7 +102,7 @@ export async function POST(request: Request) {
       console.error("brand diagnosis email claim failed", claim.error);
     } else if (claim.data) {
       try {
-        await sendDiagnosisReadyEmail(claim.data.email, claim.data.result_token, diagnosis);
+        await sendDiagnosisReadyEmail(claim.data.email, claim.data.result_token, diagnosis, profile);
         const sent = await supabase.from("waitlist").update({ diagnosis_email_status: "sent", diagnosis_email_sent_at: new Date().toISOString() }).eq("id", record.data.id).eq("diagnosis_email_status", "sending");
         if (sent.error) console.error("brand diagnosis email sent status update failed", sent.error);
       } catch (emailError) {
@@ -101,7 +112,7 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ ok: true, status: "completed", diagnosis });
+    return NextResponse.json({ ok: true, status: "completed", diagnosis, profile });
   } catch (error) {
     console.error("brand diagnosis generation failed", error);
     const failed = await supabase.from("waitlist").update({ diagnosis_status: "failed" }).eq("id", record.data.id);
