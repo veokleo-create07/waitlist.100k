@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import ClonaoFooter from "../components/clonao-footer";
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -33,7 +34,8 @@ export default function Home() {
   }
 
   return (
-    <main className="hero-atmosphere">
+    <>
+      <main className="hero-atmosphere">
       <nav className="navbar" aria-label="Primary navigation">
         <a className="brand" href="#top" aria-label="Clonao home">
           <img className="brand-mark" src="/clonao-logo.png" alt="" aria-hidden="true" />
@@ -68,6 +70,8 @@ export default function Home() {
         </section>
 
       </section>
-    </main>
+      </main>
+      <ClonaoFooter />
+    </>
   );
 }
