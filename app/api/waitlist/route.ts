@@ -19,7 +19,13 @@ export async function POST(request: Request) {
 
   const firstName = typeof body.first_name === "string" ? body.first_name.trim().slice(0, 80) || null : null;
   const source = typeof body.source === "string" ? body.source.trim().slice(0, 120) || "hero-waitlist" : "hero-waitlist";
-  const supabase = getSupabaseAdmin();
+  let supabase: ReturnType<typeof getSupabaseAdmin>;
+  try {
+    supabase = getSupabaseAdmin();
+  } catch (error) {
+    console.error("waitlist service configuration failed", error);
+    return NextResponse.json({ error: "The waitlist service is not configured yet." }, { status: 503 });
+  }
   let signup: { id: string; email: string; confirmation_sent_at: string | null } | null = null;
   let duplicate = false;
 
