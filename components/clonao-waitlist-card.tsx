@@ -1,13 +1,26 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
-type Step = "entry" | "diagnosis" | "email" | "analysis" | "success";
+type Step = "entry" | "diagnosis" | "email" | "analysis" | "results" | "success";
 type DiagnosisStep = 1 | 2 | 3;
+
+const analysisStages = [
+  "Reading your positioning",
+  "Mapping your expertise",
+  "Comparing where you are with where you want to go",
+  "Finding positioning gaps",
+  "Looking for missing proof",
+  "Identifying your strongest opportunity",
+  "Choosing your next best move",
+];
 
 export default function ClonaoWaitlistCard() {
   const [step, setStep] = useState<Step>("entry");
   const [diagnosisStep, setDiagnosisStep] = useState<DiagnosisStep>(1);
+  const [analysisStage, setAnalysisStage] = useState(0);
+  const [analysisRun, setAnalysisRun] = useState(0);
+  const [analysisError, setAnalysisError] = useState(false);
   const [status, setStatus] = useState<"idle" | "error" | "joining">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [email, setEmail] = useState("");
@@ -15,6 +28,29 @@ export default function ClonaoWaitlistCard() {
   const [desiredPositioning, setDesiredPositioning] = useState("");
   const [desiredOutcome, setDesiredOutcome] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (step !== "analysis") return;
+    let cancelled = false;
+    setAnalysisError(false);
+    setAnalysisStage(0);
+    const timers = analysisStages.map((_, index) => window.setTimeout(() => {
+      if (!cancelled) setAnalysisStage(index);
+    }, index * 850));
+    const completionTimer = window.setTimeout(() => {
+      if (!cancelled) setStep("results");
+    }, analysisStages.length * 850 + 650);
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => window.clearTimeout(timer));
+      window.clearTimeout(completionTimer);
+    };
+  }, [step, analysisRun]);
+
+  function retryAnalysis() {
+    setAnalysisError(false);
+    setAnalysisRun((run) => run + 1);
+  }
 
   function beginDiagnosis() {
     setErrorMessage("");
@@ -76,9 +112,27 @@ export default function ClonaoWaitlistCard() {
       <div className="clonao-waitlist-card__content">
         {step === "analysis" ? (
           <div className="clonao-waitlist-card__analysis" aria-busy="true">
-            <span className="clonao-waitlist-card__spinner" aria-hidden="true" />
-            <h2>Analyzing your brand…</h2>
-            <p>Your Brand Diagnosis is being prepared.</p>
+            {analysisError ? <>
+              <div className="clonao-analysis-visual is-error" aria-hidden="true"><img src="/clonao-logo.png" alt="" /></div>
+              <h2>We hit a pause.</h2>
+              <p>We couldn’t finish preparing your Brand Diagnosis.</p>
+              <button className="clonao-waitlist-card__retry" type="button" onClick={retryAnalysis}>Try again</button>
+            </> : <>
+              <div className="clonao-analysis-visual" aria-hidden="true"><img src="/clonao-logo.png" alt="" /><i /><i /><i /><i /><i /><i /></div>
+              <p className="clonao-analysis-kicker">Clonao is processing your answers</p>
+              <h2>Building your Brand Diagnosis…</h2>
+              <p className="clonao-analysis-live" role="status">{analysisStages[analysisStage]}</p>
+              <ul className="clonao-analysis-stages" aria-label="Analysis progress">
+                {analysisStages.map((stage, index) => <li key={stage} className={index < analysisStage ? "is-complete" : index === analysisStage ? "is-current" : ""}><span aria-hidden="true">{index < analysisStage ? "✓" : index === analysisStage ? "·" : ""}</span>{stage}</li>)}
+              </ul>
+            </>}
+          </div>
+        ) : step === "results" ? (
+          <div className="clonao-waitlist-card__results">
+            <div className="clonao-results-mark" aria-hidden="true"><img src="/clonao-logo.png" alt="" /></div>
+            <p className="clonao-analysis-kicker">Your personalized readout</p>
+            <h2>Your Brand Diagnosis is ready.</h2>
+            <p>Your answers have been shaped into a clear next step for your personal brand.</p>
           </div>
         ) : step === "success" ? (
           <div className="clonao-waitlist-card__success">
