@@ -1,184 +1,115 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
-import BrandDiagnosisResults, { BrandDiagnosis } from "./brand-diagnosis-results";
-import type { LinkedInIdentity } from "../lib/linkedin-profile";
+import { FormEvent, useRef, useState } from "react";
 
-type Step = "entry" | "diagnosis" | "email" | "analysis" | "results" | "success";
-type DiagnosisStep = 1 | 2 | 3;
-const analysisStages = [
-  "Reading your positioning",
-  "Mapping your expertise",
-  "Comparing where you are with where you want to go",
-  "Finding positioning gaps",
-  "Looking for missing proof",
-  "Identifying your strongest opportunity",
-  "Choosing your next best move",
+type Step = "entry" | "email" | "success" | "personalize" | "questions" | "profile-ready";
+type QuestionKey = "audience_type" | "brand_goal" | "personalization_challenge";
+
+const questions: Array<{ key: QuestionKey; label: string; options: string[] }> = [
+  { key: "audience_type", label: "What best describes you?", options: ["Founder", "Consultant", "Creator", "Freelancer", "Executive", "Other"] },
+  { key: "brand_goal", label: "What do you want your personal brand to help you achieve?", options: ["Generate clients", "Build authority", "Grow an audience", "Get opportunities", "Launch something", "Other"] },
+  { key: "personalization_challenge", label: "What’s your biggest challenge right now?", options: ["Knowing what to post", "Clear positioning", "Standing out", "Consistency", "Growth", "Knowing what to focus on"] },
 ];
 
 export default function ClonaoWaitlistCard() {
   const [step, setStep] = useState<Step>("entry");
-  const [diagnosisStep, setDiagnosisStep] = useState<DiagnosisStep>(1);
-  const [analysisStage, setAnalysisStage] = useState(0);
-  const [analysisRun, setAnalysisRun] = useState(0);
-  const [analysisError, setAnalysisError] = useState(false);
-  const [status, setStatus] = useState<"idle" | "error" | "joining">("idle");
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [status, setStatus] = useState<"idle" | "error" | "joining" | "saving">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [email, setEmail] = useState("");
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [desiredPositioning, setDesiredPositioning] = useState("");
-  const [desiredOutcome, setDesiredOutcome] = useState("");
-  const [diagnosis, setDiagnosis] = useState<BrandDiagnosis | null>(null);
-  const [profile, setProfile] = useState<LinkedInIdentity | null>(null);
+  const [resultToken, setResultToken] = useState("");
+  const [answers, setAnswers] = useState<Record<QuestionKey, string>>({ audience_type: "", brand_goal: "", personalization_challenge: "" });
   const emailRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (step !== "analysis") return;
-    let cancelled = false;
-    setAnalysisError(false);
-    setAnalysisStage(0);
-    const timers = analysisStages.map((_, index) => window.setTimeout(() => {
-      if (!cancelled) setAnalysisStage(index);
-    }, index * 850));
-    const completionTimer = window.setTimeout(() => {
-      if (!cancelled) setStep("results");
-    }, analysisStages.length * 850 + 650);
-    return () => {
-      cancelled = true;
-      timers.forEach((timer) => window.clearTimeout(timer));
-      window.clearTimeout(completionTimer);
-    };
-  }, [step, analysisRun]);
-
-  function retryAnalysis() {
-    setAnalysisError(false);
-    setAnalysisRun((run) => run + 1);
-  }
-
-  function beginDiagnosis() {
-    setErrorMessage("");
-    setStep("diagnosis");
-  }
-
-  function continueDiagnosis(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setErrorMessage("");
-    if (diagnosisStep < 3) {
-      setDiagnosisStep((diagnosisStep + 1) as DiagnosisStep);
-    } else {
-      setStep("email");
-    }
-  }
+  function openEmailStep() { setErrorMessage(""); setStep("email"); }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!emailRef.current?.checkValidity()) {
-      setStatus("error");
-      setErrorMessage("Please enter a valid email address.");
-      emailRef.current?.focus();
-      return;
+      setStatus("error"); setErrorMessage("Please enter a valid email address."); emailRef.current?.focus(); return;
     }
-
-    setStatus("joining");
-    setErrorMessage("");
-    void fetch("/api/waitlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, source: "hero-waitlist" }),
-    })
+    setStatus("joining"); setErrorMessage("");
+    void fetch("/api/waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, source: "hero-waitlist" }) })
       .then(async (response) => {
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || "We couldn't join you to the waitlist. Please try again.");
-
-        if (!payload.diagnosis_token) {
-          setStep("success");
-          return;
-        }
-
-        const diagnosisResponse = await fetch("/api/diagnosis", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ result_token: payload.diagnosis_token, linkedin_url: linkedinUrl, desired_positioning: desiredPositioning, biggest_challenge: desiredOutcome }),
-        });
-        const diagnosisPayload = await diagnosisResponse.json().catch(() => ({}));
-        if (!diagnosisResponse.ok) throw new Error(diagnosisPayload.error || "Your signup was saved, but we couldn't save your diagnosis. Please try again.");
-        if (!diagnosisPayload.diagnosis) throw new Error("Your signup was saved, but we couldn't prepare your diagnosis. Please try again.");
-        setDiagnosis(diagnosisPayload.diagnosis as BrandDiagnosis);
-        setProfile((diagnosisPayload.profile as LinkedInIdentity | undefined) || null);
-        setStep("analysis");
+        setResultToken(payload.diagnosis_token || ""); setStatus("idle"); setStep("success");
       })
-      .catch((error: unknown) => {
-        setStatus("error");
-        setErrorMessage(error instanceof Error ? error.message : "We couldn't join you to the waitlist. Please try again.");
-      });
+      .catch((error: unknown) => { setStatus("error"); setErrorMessage(error instanceof Error ? error.message : "We couldn't join you to the waitlist. Please try again."); });
   }
+
+  function chooseAnswer(value: string) {
+    const question = questions[questionIndex];
+    const nextAnswers = { ...answers, [question.key]: value };
+    setAnswers(nextAnswers); setErrorMessage("");
+    if (questionIndex < questions.length - 1) { setQuestionIndex((index) => index + 1); return; }
+    if (!resultToken) { setStep("profile-ready"); return; }
+    setStatus("saving");
+    void fetch("/api/waitlist/personalize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ result_token: resultToken, ...nextAnswers }) })
+      .then(async (response) => {
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(payload.error || "We couldn't save your preferences. Please try again.");
+        setStatus("idle"); setStep("profile-ready");
+      })
+      .catch((error: unknown) => { setStatus("error"); setErrorMessage(error instanceof Error ? error.message : "We couldn't save your preferences. Please try again."); });
+  }
+
+  const selectedQuestion = questions[questionIndex];
+  const communityUrl = process.env.NEXT_PUBLIC_COMMUNITY_URL || "#";
 
   return (
     <section className="clonao-waitlist-card" aria-live="polite">
       <div className="clonao-waitlist-card__content">
-        {step === "analysis" ? (
-          <div className="clonao-waitlist-card__analysis" aria-busy="true">
-            {analysisError ? <>
-              <div className="clonao-analysis-visual is-error" aria-hidden="true"><img src="/clonao-logo.png" alt="" /></div>
-              <h2>We hit a pause.</h2>
-              <p>We couldn’t finish preparing your Brand Diagnosis.</p>
-              <button className="clonao-waitlist-card__retry" type="button" onClick={retryAnalysis}>Try again</button>
-            </> : <>
-              <div className="clonao-analysis-visual" aria-hidden="true"><img src="/clonao-logo.png" alt="" /><i /><i /><i /><i /><i /><i /></div>
-              <p className="clonao-analysis-kicker">Clonao is processing your answers</p>
-              <h2>Building your Brand Diagnosis…</h2>
-              <p className="clonao-analysis-live" role="status">{analysisStages[analysisStage]}</p>
-              <ul className="clonao-analysis-stages" aria-label="Analysis progress">
-                {analysisStages.map((stage, index) => <li key={stage} className={index < analysisStage ? "is-complete" : index === analysisStage ? "is-current" : ""}><span aria-hidden="true">{index < analysisStage ? "✓" : index === analysisStage ? "·" : ""}</span>{stage}</li>)}
-              </ul>
-            </>}
+        {step === "entry" ? <>
+          <h2>Join Clonao early access</h2>
+          <p className="clonao-waitlist-card__subline">Get product previews, founder updates, and first access when Clonao launches.</p>
+          <button className="clonao-waitlist-card__entry-button" type="button" onClick={openEmailStep}>Join early access</button>
+        </> : null}
+
+        {step === "email" ? <>
+          <h2>Enter your email</h2>
+          <form className="clonao-waitlist-card__form" onSubmit={submit} noValidate>
+            <label className="sr-only" htmlFor="waitlist-email">Email address</label>
+            <span className="clonao-waitlist-card__input-wrap">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6.5h16v11H4z" /><path d="m4.5 7 7.5 6 7.5-6" /></svg>
+              <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onChange={(event) => { setEmail(event.target.value); setStatus("idle"); setErrorMessage(""); }} />
+            </span>
+            <button type="submit" disabled={status === "joining"}>{status === "joining" ? "Joining…" : "Get early access"}</button>
+          </form>
+          <p className="clonao-waitlist-card__consent">By joining, you agree to receive Clonao waitlist, early-access and launch emails. Unsubscribe anytime. <a href="/privacy">Privacy Policy</a>.</p>
+          <p className={`clonao-waitlist-card__status${status === "error" ? " is-error" : ""}`} role="status">{status === "error" ? errorMessage : ""}</p>
+        </> : null}
+
+        {step === "success" ? <div className="clonao-waitlist-card__success">
+          <h2>You’re in.</h2><p>Your Clonao early access is reserved.</p>
+          <p className="clonao-waitlist-card__success-prompt">Want to personalize your early access?</p>
+          <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => { setQuestionIndex(0); setStep("personalize"); }}>Personalize my experience</button>
+          <button className="clonao-waitlist-card__text-button" type="button" onClick={() => setStep("profile-ready")}>Skip for now</button>
+        </div> : null}
+
+        {step === "personalize" ? <div className="clonao-waitlist-card__personalize">
+          <h2>Personalize your early access.</h2><p className="clonao-waitlist-card__subline">Three quick answers help us make the build more relevant to you.</p>
+          <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => setStep("questions")}>Continue</button>
+        </div> : null}
+
+        {step === "questions" ? <div className="clonao-waitlist-card__personalize">
+          <div className="clonao-waitlist-card__progress" aria-label={`Personalization question ${questionIndex + 1} of ${questions.length}`}>
+            {questions.map((question, index) => <span key={question.key} className={index <= questionIndex ? "is-active" : ""} />)}<span className="clonao-waitlist-card__progress-label">{questionIndex + 1} of {questions.length}</span>
           </div>
-        ) : step === "results" && diagnosis ? (
-          <BrandDiagnosisResults diagnosis={diagnosis} profile={profile} />
-        ) : step === "success" ? (
-          <div className="clonao-waitlist-card__success">
-            <h2>You’re in early access.</h2>
-            <p>Your answers are saved for your free Brand Diagnosis. We’ll let you know when Clonao launches.</p>
+          <h2>{selectedQuestion.label}</h2>
+          <div className="clonao-waitlist-card__options" role="listbox" aria-label={selectedQuestion.label}>
+            {selectedQuestion.options.map((option) => <button key={option} type="button" className={answers[selectedQuestion.key] === option ? "is-selected" : ""} onClick={() => chooseAnswer(option)}>{option}</button>)}
           </div>
-        ) : step === "entry" ? (
-          <>
-            <h2>Join Clonao early access</h2>
-            <p className="clonao-waitlist-card__subline">Get a free Brand Diagnosis while we build — and be first in line when Clonao launches.</p>
-            <button className="clonao-waitlist-card__entry-button" type="button" onClick={beginDiagnosis}>Join early access</button>
-          </>
-        ) : step === "diagnosis" ? (
-          <>
-            <div className="clonao-waitlist-card__progress" aria-label={`Brand Diagnosis step ${diagnosisStep} of 3`}>
-              {[1, 2, 3].map((item) => <span key={item} className={item <= diagnosisStep ? "is-active" : ""} />)}
-              <span className="clonao-waitlist-card__progress-label">{diagnosisStep} of 3</span>
-            </div>
-            <div className="clonao-waitlist-card__question" key={diagnosisStep}>
-              <h2>Get your free Brand Diagnosis</h2>
-              <p className="clonao-waitlist-card__subline">Answer three quick questions while Clonao is still in early access.</p>
-              <form className="clonao-waitlist-card__diagnosis-form" onSubmit={continueDiagnosis}>
-                {diagnosisStep === 1 ? <><label htmlFor="linkedin-url">LinkedIn profile URL</label><input id="linkedin-url" name="linkedin_url" type="url" placeholder="https://linkedin.com/in/your-name" required value={linkedinUrl} onChange={(event) => { setLinkedinUrl(event.target.value); setErrorMessage(""); }} /></> : null}
-                {diagnosisStep === 2 ? <><label htmlFor="desired-positioning">What do you want to be known for?</label><input id="desired-positioning" name="desired_positioning" type="text" placeholder="Your point of view, expertise, or edge" required value={desiredPositioning} onChange={(event) => { setDesiredPositioning(event.target.value); setErrorMessage(""); }} /></> : null}
-                {diagnosisStep === 3 ? <><label htmlFor="desired-outcome">What do you want your personal brand to help you achieve?</label><input id="desired-outcome" name="desired_outcome" type="text" placeholder="The outcome you want to create" required value={desiredOutcome} onChange={(event) => { setDesiredOutcome(event.target.value); setErrorMessage(""); }} /></> : null}
-                <button type="submit">{diagnosisStep === 3 ? "Continue →" : "Continue"}</button>
-              </form>
-            </div>
-          </>
-        ) : (
-          <>
-            <h2>Where should we send your Brand Diagnosis?</h2>
-            <p className="clonao-waitlist-card__subline">You’ll also be added to the Clonao early-access waitlist.</p>
-            <form className="clonao-waitlist-card__form" onSubmit={submit} noValidate>
-              <label className="sr-only" htmlFor="waitlist-email">Email address</label>
-              <span className="clonao-waitlist-card__input-wrap">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6.5h16v11H4z" /><path d="m4.5 7 7.5 6 7.5-6" /></svg>
-                <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onChange={(event) => { setEmail(event.target.value); setStatus("idle"); setErrorMessage(""); }} />
-              </span>
-              <button type="submit" disabled={status === "joining"}>{status === "joining" ? "Analyzing…" : "Join the waitlist & analyze my brand"}</button>
-            </form>
-            <p className="clonao-waitlist-card__consent">By joining, you agree to receive Clonao waitlist, early-access and launch emails. Unsubscribe anytime. <a href="/privacy">Privacy Policy</a>.</p>
-            <p className={`clonao-waitlist-card__status${status === "error" ? " is-error" : ""}`} role="status">{status === "error" ? errorMessage : ""}</p>
-          </>
-        )}
+          {status === "saving" ? <p className="clonao-waitlist-card__status" role="status">Saving your preferences…</p> : null}
+          {status === "error" ? <p className="clonao-waitlist-card__status is-error" role="status">{errorMessage}</p> : null}
+        </div> : null}
+
+        {step === "profile-ready" ? <div className="clonao-waitlist-card__success">
+          <h2>Your early-access profile is ready.</h2>
+          {answers.brand_goal && answers.personalization_challenge ? <p>You want to {answers.brand_goal.toLowerCase()}, and your biggest challenge is {answers.personalization_challenge.toLowerCase()}.</p> : <p>You’re on the Clonao early-access list. We’ll keep you close to the build.</p>}
+          <p className="clonao-waitlist-card__success-prompt">Get inside the build.</p><p>See product previews, founder updates, feature decisions, and early testing opportunities.</p>
+          <a className="clonao-waitlist-card__entry-button clonao-waitlist-card__community-button" href={communityUrl} target={communityUrl === "#" ? undefined : "_blank"} rel={communityUrl === "#" ? undefined : "noreferrer"}>Join the private Clonao community</a>
+        </div> : null}
       </div>
     </section>
   );

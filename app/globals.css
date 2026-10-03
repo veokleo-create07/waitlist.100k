@@ -214,6 +214,16 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
   .clonao-waitlist-card__consent { margin-top: 22px; font-size: 12px; }
 }
 .clonao-waitlist-card__success p { margin: 0; color: rgb(225 240 255 / .76); font-size: 14px; }
+.clonao-waitlist-card__success-prompt { margin-top: 30px !important; color: white !important; font-size: 18px !important; font-weight: 500; }
+.clonao-waitlist-card__text-button { margin-top: 16px; border: 0; color: rgb(235 247 255 / .82); background: transparent; cursor: pointer; font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
+.clonao-waitlist-card__text-button:hover { color: white; }
+.clonao-waitlist-card__personalize { text-align: center; }
+.clonao-waitlist-card__personalize h2 { margin-bottom: 16px; }
+.clonao-waitlist-card__options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 24px; text-align: left; }
+.clonao-waitlist-card__options button { min-height: 52px; padding: 10px 14px; border: 1px solid rgb(255 255 255 / .38); border-radius: 14px; color: white; background: rgb(255 255 255 / .1); box-shadow: inset 0 1px rgb(255 255 255 / .18); cursor: pointer; font-size: 14px; text-align: left; transition: background .2s ease, border-color .2s ease, transform .2s ease; }
+.clonao-waitlist-card__options button:hover, .clonao-waitlist-card__options button.is-selected { border-color: rgb(194 232 255 / .82); background: rgb(255 255 255 / .2); transform: translateY(-1px); }
+.clonao-waitlist-card__options button:focus-visible, .clonao-waitlist-card__text-button:focus-visible { outline: 3px solid rgb(190 230 255 / .78); outline-offset: 3px; }
+.clonao-waitlist-card__community-button { display: flex; align-items: center; justify-content: center; margin-top: 25px; text-decoration: none; }
 .diagnosis-page { min-height: 100vh; padding: 72px 24px; color: white; background: linear-gradient(180deg, #0b4dff 0%, #2d7cff 24%, #8ccbff 52%, #dceeff 78%, #f8fbfd 100%); }
 .diagnosis-page__shell { width: min(100%, 740px); margin: 0 auto; padding: 56px 54px 34px; border: 1.5px solid rgb(255 255 255 / .52); border-radius: 44px; background: linear-gradient(145deg, rgb(255 255 255 / .24), rgb(121 193 255 / .16) 48%, rgb(255 255 255 / .24)); box-shadow: 0 30px 80px rgb(11 71 166 / .3), 0 0 34px rgb(185 229 255 / .23), inset 0 1px 1px rgb(255 255 255 / .8); backdrop-filter: blur(30px) saturate(145%); }
 @media (max-width: 640px) { .diagnosis-page { padding: 28px 12px; } .diagnosis-page__shell { padding: 38px 20px 26px; border-radius: 30px; } }
