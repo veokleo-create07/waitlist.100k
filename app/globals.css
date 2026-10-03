@@ -100,6 +100,7 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
   border-bottom: 1px solid rgb(255 255 255 / .25);
 }
 .clonao-diagnosis-results__greeting { margin: 0 0 18px; color: white; font-size: 18px; line-height: 1.4; }
+.clonao-diagnosis-results__profile-summary { margin: -8px 0 25px; color: rgb(235 246 255 / .82); font-size: 16px; line-height: 1.6; }
 .clonao-diagnosis-identity { display: flex; align-items: center; gap: 13px; margin: 0 0 26px; padding: 0 0 22px; border-bottom: 1px solid rgb(255 255 255 / .18); }
 .clonao-diagnosis-identity img { width: 52px; height: 52px; flex: 0 0 auto; border: 1px solid rgb(255 255 255 / .42); border-radius: 50%; object-fit: cover; }
 .clonao-diagnosis-identity div { min-width: 0; display: grid; gap: 3px; }

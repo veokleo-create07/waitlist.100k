@@ -11,13 +11,14 @@ export default function BrandDiagnosisResults({ diagnosis, profile }: { diagnosi
   return (
     <div className="clonao-diagnosis-results">
       <header className="clonao-diagnosis-results__header">
-        {profile?.first_name ? <p className="clonao-diagnosis-results__greeting">Hey {profile.first_name},</p> : null}
+        <p className="clonao-diagnosis-results__greeting">{profile?.first_name ? `Hey ${profile.first_name}, here’s what your profile is about.` : "Here’s what your profile is about."}</p>
         {profile && (profile.profile_image_url || profile.full_name || profile.headline) ? (
           <div className="clonao-diagnosis-identity">
             {profile.profile_image_url ? <img src={profile.profile_image_url} alt="" /> : null}
             <div><strong>{profile.full_name || ""}</strong>{profile.headline ? <span>{profile.headline}</span> : null}</div>
           </div>
         ) : null}
+        {profile?.about ? <p className="clonao-diagnosis-results__profile-summary">{profile.about}</p> : null}
         <p className="clonao-analysis-kicker">Your Brand Diagnosis</p>
         <h2>Your brand, with a clearer next move.</h2>
         <p>Here’s what Clonao found based on where your brand is now and where you want it to go.</p>
