@@ -2,13 +2,13 @@
 
 import { FormEvent, useRef, useState } from "react";
 
-type Step = "entry" | "email" | "success" | "personalize" | "questions" | "profile-ready";
-type QuestionKey = "audience_type" | "brand_goal" | "personalization_challenge";
+type Step = "entry" | "email" | "success" | "skipped" | "personalize" | "questions" | "profile-ready";
+type QuestionKey = "persona_type" | "brand_goal" | "main_challenge";
 
 const questions: Array<{ key: QuestionKey; label: string; options: string[] }> = [
-  { key: "audience_type", label: "What best describes you?", options: ["Founder", "Consultant", "Creator", "Freelancer", "Executive", "Other"] },
+  { key: "persona_type", label: "What best describes you?", options: ["Founder", "Consultant", "Creator", "Freelancer", "Executive", "Other"] },
   { key: "brand_goal", label: "What do you want your personal brand to help you achieve?", options: ["Generate clients", "Build authority", "Grow an audience", "Get opportunities", "Launch something", "Other"] },
-  { key: "personalization_challenge", label: "What’s your biggest challenge right now?", options: ["Knowing what to post", "Clear positioning", "Standing out", "Consistency", "Growth", "Knowing what to focus on"] },
+  { key: "main_challenge", label: "What’s your biggest challenge right now?", options: ["Knowing what to post", "Clear positioning", "Standing out", "Consistency", "Growth", "Knowing what to focus on"] },
 ];
 
 export default function ClonaoWaitlistCard() {
@@ -18,7 +18,7 @@ export default function ClonaoWaitlistCard() {
   const [errorMessage, setErrorMessage] = useState("");
   const [email, setEmail] = useState("");
   const [resultToken, setResultToken] = useState("");
-  const [answers, setAnswers] = useState<Record<QuestionKey, string>>({ audience_type: "", brand_goal: "", personalization_challenge: "" });
+  const [answers, setAnswers] = useState<Record<QuestionKey, string>>({ persona_type: "", brand_goal: "", main_challenge: "" });
   const emailRef = useRef<HTMLInputElement>(null);
 
   function openEmailStep() { setErrorMessage(""); setStep("email"); }
@@ -55,8 +55,6 @@ export default function ClonaoWaitlistCard() {
   }
 
   const selectedQuestion = questions[questionIndex];
-  const communityUrl = process.env.NEXT_PUBLIC_COMMUNITY_URL || "#";
-
   return (
     <section className="clonao-waitlist-card" aria-live="polite">
       <div className="clonao-waitlist-card__content">
@@ -84,7 +82,7 @@ export default function ClonaoWaitlistCard() {
           <h2>You’re in.</h2><p>Your Clonao early access is reserved.</p>
           <p className="clonao-waitlist-card__success-prompt">Want to personalize your early access?</p>
           <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => { setQuestionIndex(0); setStep("personalize"); }}>Personalize my experience</button>
-          <button className="clonao-waitlist-card__text-button" type="button" onClick={() => setStep("profile-ready")}>Skip for now</button>
+          <button className="clonao-waitlist-card__text-button" type="button" onClick={() => setStep("skipped")}>Skip for now</button>
         </div> : null}
 
         {step === "personalize" ? <div className="clonao-waitlist-card__personalize">
@@ -98,17 +96,24 @@ export default function ClonaoWaitlistCard() {
           </div>
           <h2>{selectedQuestion.label}</h2>
           <div className="clonao-waitlist-card__options" role="listbox" aria-label={selectedQuestion.label}>
-            {selectedQuestion.options.map((option) => <button key={option} type="button" className={answers[selectedQuestion.key] === option ? "is-selected" : ""} onClick={() => chooseAnswer(option)}>{option}</button>)}
+            {selectedQuestion.options.map((option) => <button key={option} type="button" disabled={status === "saving"} className={answers[selectedQuestion.key] === option ? "is-selected" : ""} onClick={() => chooseAnswer(option)}>{option}</button>)}
           </div>
+          <button className="clonao-waitlist-card__text-button clonao-waitlist-card__back-button" type="button" disabled={status === "saving"} onClick={() => { setErrorMessage(""); setQuestionIndex((index) => Math.max(0, index - 1)); }}>Back</button>
           {status === "saving" ? <p className="clonao-waitlist-card__status" role="status">Saving your preferences…</p> : null}
           {status === "error" ? <p className="clonao-waitlist-card__status is-error" role="status">{errorMessage}</p> : null}
         </div> : null}
 
         {step === "profile-ready" ? <div className="clonao-waitlist-card__success">
           <h2>Your early-access profile is ready.</h2>
-          {answers.brand_goal && answers.personalization_challenge ? <p>You want to {answers.brand_goal.toLowerCase()}, and your biggest challenge is {answers.personalization_challenge.toLowerCase()}.</p> : <p>You’re on the Clonao early-access list. We’ll keep you close to the build.</p>}
-          <p className="clonao-waitlist-card__success-prompt">Get inside the build.</p><p>See product previews, founder updates, feature decisions, and early testing opportunities.</p>
-          <a className="clonao-waitlist-card__entry-button clonao-waitlist-card__community-button" href={communityUrl} target={communityUrl === "#" ? undefined : "_blank"} rel={communityUrl === "#" ? undefined : "noreferrer"}>Join the private Clonao community</a>
+          {answers.brand_goal && answers.main_challenge ? <p>You want to {answers.brand_goal.toLowerCase()}, and your biggest challenge right now is {answers.main_challenge.toLowerCase()}.</p> : <p>You’re on the Clonao early-access list. We’ll keep you close to the build.</p>}
+          <p className="clonao-waitlist-card__success-prompt">We’ll keep you updated as Clonao gets closer to launch.</p><p>Expect product previews, founder updates, feature decisions, and your access invitation by email.</p>
+        </div> : null}
+
+        {step === "skipped" ? <div className="clonao-waitlist-card__success">
+          <h2>You’re in.</h2>
+          <p>Your Clonao early access is reserved.</p>
+          <p className="clonao-waitlist-card__success-prompt">We’ll keep you updated as Clonao gets closer to launch.</p>
+          <p>Expect product previews, founder updates, feature decisions, and your access invitation by email.</p>
         </div> : null}
       </div>
     </section>
