@@ -5,11 +5,12 @@ import type { FormEvent, MutableRefObject } from "react";
 
 const SOUND_ENABLED = true;
 
-type SoundKind = "click" | "focus" | "valid" | "success";
+type SoundKind = "click" | "focus" | "typing" | "valid" | "success";
 
 const SOUND_SETTINGS = {
   click: { frequency: 420, duration: 0.12, volume: 0.2 },
   focus: { frequency: 620, duration: 0.16, volume: 0.16 },
+  typing: { frequency: 300, duration: 0.045, volume: 0.1 },
   valid: { frequency: 920, duration: 0.13, volume: 0.18 },
   success: { frequency: 520, duration: 0.62, volume: 0.22 },
 } satisfies Record<SoundKind, { frequency: number; duration: number; volume: number }>;
@@ -121,7 +122,7 @@ export default function ClonaoWaitlistCard() {
             <label className="sr-only" htmlFor="waitlist-email">Email address</label>
             <span className={`clonao-waitlist-card__input-wrap${emailFocused ? " is-focused" : ""}${emailValid ? " is-valid" : ""}`}>
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6.5h16v11H4z" /><path d="m4.5 7 7.5 6 7.5-6" /></svg>
-              <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onFocus={() => { setEmailFocused(true); if (!focusSoundPlayedRef.current) { focusSoundPlayedRef.current = true; playFeedbackSound("focus", audioRef); } }} onBlur={() => setEmailFocused(false)} onChange={(event) => { const nextEmail = event.target.value; const nextIsValid = event.currentTarget.checkValidity(); setEmail(nextEmail); setEmailValid(nextIsValid); setStatus("idle"); setErrorMessage(""); if (nextIsValid && !validSoundPlayedRef.current) { validSoundPlayedRef.current = true; playFeedbackSound("valid", audioRef); } if (!nextIsValid) validSoundPlayedRef.current = false; }} />
+              <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onFocus={() => { setEmailFocused(true); if (!focusSoundPlayedRef.current) { focusSoundPlayedRef.current = true; playFeedbackSound("focus", audioRef); } }} onBlur={() => setEmailFocused(false)} onKeyDown={(event) => { if (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete") playFeedbackSound("typing", audioRef); }} onChange={(event) => { const nextEmail = event.target.value; const nextIsValid = event.currentTarget.checkValidity(); setEmail(nextEmail); setEmailValid(nextIsValid); setStatus("idle"); setErrorMessage(""); if (nextIsValid && !validSoundPlayedRef.current) { validSoundPlayedRef.current = true; playFeedbackSound("valid", audioRef); } if (!nextIsValid) validSoundPlayedRef.current = false; }} />
               <span className="clonao-waitlist-card__valid-mark" aria-hidden="true">✓</span>
             </span>
             <button className={status === "joining" ? "is-joining" : ""} type="submit" disabled={status === "joining"}>{status === "joining" ? "Joining…" : "Get early access"}</button>
