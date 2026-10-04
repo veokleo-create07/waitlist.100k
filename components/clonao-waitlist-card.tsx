@@ -4,16 +4,20 @@ import { FormEvent, useRef, useState } from "react";
 import type { MutableRefObject } from "react";
 
 const SOUND_ENABLED = true;
-type SoundKind = "typing" | "confirmation";
-type SoundMap = Partial<Record<SoundKind, HTMLAudioElement>>;
+type SoundMap = { typing: HTMLAudioElement[]; confirmation?: HTMLAudioElement };
 
-const SOUND_SETTINGS = {
-  typing: { duration: 0.045, volume: 0.4 },
-  confirmation: { duration: 0.58, volume: 0.55 },
-} satisfies Record<SoundKind, { duration: number; volume: number }>;
+const TYPING_SOUNDS = [
+  { frequency: 1120, duration: 0.034 },
+  { frequency: 1240, duration: 0.038 },
+  { frequency: 1180, duration: 0.031 },
+  { frequency: 1300, duration: 0.036 },
+];
+const TYPING_VOLUME = 0.4;
+const CONFIRMATION_DURATION = 0.58;
+const CONFIRMATION_VOLUME = 0.55;
 
-function createSound(kind: SoundKind) {
-  const { duration } = SOUND_SETTINGS[kind];
+function createSound(kind: "typing" | "confirmation", variant = 0) {
+  const duration = kind === "typing" ? TYPING_SOUNDS[variant].duration : CONFIRMATION_DURATION;
   const sampleRate = 44100;
   const sampleCount = Math.floor(sampleRate * duration);
   const buffer = new ArrayBuffer(44 + sampleCount * 2);
@@ -27,8 +31,9 @@ function createSound(kind: SoundKind) {
     const time = index / sampleRate;
     let sample = 0;
     if (kind === "typing") {
-      const envelope = Math.min(1, time / 0.004) * Math.min(1, (duration - time) / 0.018);
-      sample = Math.sin(time * 1220 * Math.PI * 2) * envelope * 0.44;
+      const envelope = Math.min(1, time / 0.003) * Math.min(1, (duration - time) / 0.012);
+      const frequency = TYPING_SOUNDS[variant].frequency;
+      sample = Math.sin(time * frequency * Math.PI * 2) * envelope * 0.4;
     } else {
       const attack = Math.min(1, time / 0.045);
       const tail = Math.exp(-time * 5.8);
@@ -42,19 +47,35 @@ function createSound(kind: SoundKind) {
 
   const audio = new Audio(URL.createObjectURL(new Blob([buffer], { type: "audio/wav" })));
   audio.preload = "auto";
-  audio.volume = SOUND_SETTINGS[kind].volume;
+  audio.volume = kind === "typing" ? TYPING_VOLUME : CONFIRMATION_VOLUME;
   audio.load();
   return audio;
 }
 
-function playSound(kind: SoundKind, soundsRef: MutableRefObject<SoundMap>) {
+function playConfirmationSound(soundsRef: MutableRefObject<SoundMap>) {
   if (!SOUND_ENABLED || typeof window === "undefined") return;
   try {
-    const audio = soundsRef.current[kind] ?? (soundsRef.current[kind] = createSound(kind));
+    const audio = soundsRef.current.confirmation ?? (soundsRef.current.confirmation = createSound("confirmation"));
     audio.currentTime = 0;
     void audio.play().catch(() => undefined);
   } catch {
     // Sound is optional feedback and must never interfere with signup.
+  }
+}
+
+function playTypingSound(soundsRef: MutableRefObject<SoundMap>, nextIndexRef: MutableRefObject<number>, lastPlayedAtRef: MutableRefObject<number>) {
+  if (!SOUND_ENABLED || typeof window === "undefined") return;
+  const now = performance.now();
+  if (now - lastPlayedAtRef.current < 22) return;
+  lastPlayedAtRef.current = now;
+  try {
+    const index = nextIndexRef.current % TYPING_SOUNDS.length;
+    const audio = soundsRef.current.typing[index] ?? (soundsRef.current.typing[index] = createSound("typing", index));
+    nextIndexRef.current = (index + 1) % TYPING_SOUNDS.length;
+    audio.currentTime = 0;
+    void audio.play().catch(() => undefined);
+  } catch {
+    // Sound is optional feedback and must never interfere with typing.
   }
 }
 
@@ -66,7 +87,9 @@ export default function ClonaoWaitlistCard() {
   const [errorMessage, setErrorMessage] = useState("");
   const [email, setEmail] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
-  const soundsRef = useRef<SoundMap>({});
+  const soundsRef = useRef<SoundMap>({ typing: [] });
+  const nextTypingSoundRef = useRef(0);
+  const lastTypingSoundAtRef = useRef(0);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -87,7 +110,7 @@ export default function ClonaoWaitlistCard() {
       .then(async (response) => {
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || "We couldn't join you to the waitlist. Please try again.");
-        playSound("confirmation", soundsRef);
+        playConfirmationSound(soundsRef);
         setStatus("idle");
         setStep("success");
       })
@@ -111,7 +134,7 @@ export default function ClonaoWaitlistCard() {
             <label className="sr-only" htmlFor="waitlist-email">Email address</label>
             <span className="clonao-waitlist-card__input-wrap">
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6.5h16v11H4z" /><path d="m4.5 7 7.5 6 7.5-6" /></svg>
-              <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onKeyDown={(event) => { if (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete") playSound("typing", soundsRef); }} onChange={(event) => { setEmail(event.target.value); setStatus("idle"); setErrorMessage(""); }} />
+              <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onKeyDown={(event) => { if (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete") playTypingSound(soundsRef, nextTypingSoundRef, lastTypingSoundAtRef); }} onChange={(event) => { setEmail(event.target.value); setStatus("idle"); setErrorMessage(""); }} />
             </span>
             <button type="submit" disabled={status === "joining"}>{status === "joining" ? "Joining…" : "Get early access"}</button>
           </form>
