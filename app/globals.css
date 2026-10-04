@@ -356,7 +356,9 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 .clonao-portal-stage { width: min(100%, 860px); margin: 42px auto 0; padding: 42px 0 48px; position: relative; isolation: isolate; }
 .clonao-waitlist-card { width: 100%; height: 300px; margin: 0; position: relative; z-index: 2; overflow: hidden; border: 1px solid rgb(255 255 255 / .68); border-radius: 34% 25% 30% 22% / 24% 20% 25% 22%; background: rgb(180 221 255 / .16); box-shadow: 0 34px 72px rgb(12 68 143 / .28), 0 0 36px rgb(220 246 255 / .3), inset 0 1px 1px rgb(255 255 255 / .84), inset 0 -1px 1px rgb(255 255 255 / .28); backdrop-filter: blur(16px) saturate(125%); animation: clonao-portal-float 8s ease-in-out infinite; transform-origin: 50% 50%; }
 .clonao-waitlist-card::before { z-index: 3; background: linear-gradient(116deg, rgb(255 255 255 / .38), transparent 18%, transparent 64%, rgb(232 250 255 / .2)); mix-blend-mode: screen; }
-.clonao-portal-image { width: 106%; height: 116%; position: absolute; z-index: 0; top: -8%; left: -3%; object-fit: cover; object-position: center 56%; opacity: .82; transform: translate3d(var(--portal-mx, 0px), var(--portal-my, 0px), 0) scale(1.04); transition: transform .8s cubic-bezier(.2,.7,.2,1); filter: saturate(.9) contrast(.94); }
+.clonao-portal-image { width: 106%; height: 116%; position: absolute; z-index: 0; top: -8%; left: -3%; opacity: .86; transform: translate3d(var(--portal-mx, 0px), var(--portal-my, 0px), 0) scale(1.04); transition: transform .8s cubic-bezier(.2,.7,.2,1); filter: saturate(.9) contrast(.94); }
+.water-ripple-image img, .water-ripple-image canvas { width: 100%; height: 100%; position: absolute; inset: 0; display: block; object-fit: cover; object-position: center 56%; }
+.water-ripple-image canvas { mix-blend-mode: screen; opacity: .82; }
 .clonao-portal-glass { position: absolute; z-index: 1; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 8%, rgb(255 255 255 / .3), transparent 32%), linear-gradient(180deg, rgb(105 194 255 / .12), rgb(43 121 218 / .08) 55%, rgb(238 251 255 / .16)); }
 .clonao-waitlist-card__content { height: 100%; padding: 48px 52px 32px; border-radius: inherit; background: transparent; transform: rotate(4.5deg); }
 .clonao-waitlist-card h2 { font-size: clamp(30px, 4vw, 42px); text-shadow: 0 2px 13px rgb(12 67 137 / .38); }
@@ -386,4 +388,5 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 @media (prefers-reduced-motion: reduce) {
   .clonao-waitlist-card, .clonao-portal-orbit, .clonao-portal-bubble { animation: none; }
   .clonao-portal-image { transition: none; transform: scale(1.04); }
+  .water-ripple-image canvas { display: none; }
 }

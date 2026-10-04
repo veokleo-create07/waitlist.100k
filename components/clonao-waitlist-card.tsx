@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import WaterRippleImage from "./ui/water-ripple-image";
 
 type Step = "entry" | "email" | "success";
 
@@ -69,7 +70,7 @@ export default function ClonaoWaitlistCard() {
       <span className="clonao-portal-bubble clonao-portal-bubble--two" aria-hidden="true" />
       <span className="clonao-portal-bubble clonao-portal-bubble--three" aria-hidden="true" />
       <section className="clonao-waitlist-card" aria-live="polite">
-        <img className="clonao-portal-image" src="https://i.postimg.cc/9XDFDLhc/Sunlit-Canopy-Framing-Blue-Skies.png" alt="" aria-hidden="true" />
+        <WaterRippleImage className="clonao-portal-image" src="https://i.postimg.cc/9XDFDLhc/Sunlit-Canopy-Framing-Blue-Skies.png" />
         <span className="clonao-portal-glass" aria-hidden="true" />
         <div className="clonao-waitlist-card__content">
         {step === "entry" ? <>
