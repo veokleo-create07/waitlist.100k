@@ -7,42 +7,51 @@ const SOUND_ENABLED = true;
 
 type SoundKind = "click" | "focus" | "valid" | "success";
 
-function playFeedbackSound(kind: SoundKind, contextRef: MutableRefObject<AudioContext | null>) {
-  if (!SOUND_ENABLED || typeof window === "undefined" || !("AudioContext" in window)) return;
+const SOUND_SETTINGS = {
+  click: { frequency: 420, duration: 0.12, volume: 0.2 },
+  focus: { frequency: 620, duration: 0.16, volume: 0.16 },
+  valid: { frequency: 920, duration: 0.13, volume: 0.18 },
+  success: { frequency: 520, duration: 0.62, volume: 0.22 },
+} satisfies Record<SoundKind, { frequency: number; duration: number; volume: number }>;
 
+function createToneAudio(kind: SoundKind) {
+  const { frequency, duration } = SOUND_SETTINGS[kind];
+  const sampleRate = 44100;
+  const sampleCount = Math.floor(sampleRate * duration);
+  const buffer = new ArrayBuffer(44 + sampleCount * 2);
+  const view = new DataView(buffer);
+  const write = (offset: number, value: string) => [...value].forEach((character, index) => view.setUint8(offset + index, character.charCodeAt(0)));
+  write(0, "RIFF"); view.setUint32(4, 36 + sampleCount * 2, true); write(8, "WAVE"); write(12, "fmt ");
+  view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true); view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true); write(36, "data"); view.setUint32(40, sampleCount * 2, true);
+  for (let index = 0; index < sampleCount; index += 1) {
+    const time = index / sampleRate;
+    const envelope = Math.min(1, time / 0.012) * Math.min(1, (duration - time) / 0.08);
+    const frequencyAtTime = kind === "success" ? frequency + 260 * (time / duration) : frequency;
+    view.setInt16(44 + index * 2, Math.sin(time * frequencyAtTime * Math.PI * 2) * envelope * 0.78 * 32767, true);
+  }
+  const audio = new Audio(URL.createObjectURL(new Blob([buffer], { type: "audio/wav" })));
+  audio.preload = "auto";
+  audio.volume = SOUND_SETTINGS[kind].volume;
+  audio.load();
+  return audio;
+}
+
+function primeFeedbackSounds(audioRef: MutableRefObject<Partial<Record<SoundKind, HTMLAudioElement>>>) {
+  if (!SOUND_ENABLED || typeof window === "undefined") return;
+  (Object.keys(SOUND_SETTINGS) as SoundKind[]).forEach((kind) => {
+    if (!audioRef.current[kind]) audioRef.current[kind] = createToneAudio(kind);
+  });
+}
+
+function playFeedbackSound(kind: SoundKind, audioRef: MutableRefObject<Partial<Record<SoundKind, HTMLAudioElement>>>) {
+  if (!SOUND_ENABLED || typeof window === "undefined") return;
   try {
-    const AudioContextConstructor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AudioContextConstructor) return;
-    const context = contextRef.current ?? new AudioContextConstructor();
-    contextRef.current = context;
-    if (context.state === "suspended") void context.resume();
-
-    const settings = {
-      click: { frequency: 420, duration: 0.12, volume: 0.2, type: "sine" as OscillatorType },
-      focus: { frequency: 620, duration: 0.16, volume: 0.16, type: "sine" as OscillatorType },
-      valid: { frequency: 920, duration: 0.13, volume: 0.18, type: "sine" as OscillatorType },
-      success: { frequency: 520, duration: 0.62, volume: 0.22, type: "sine" as OscillatorType },
-    }[kind];
-    const schedule = () => {
-      const now = context.currentTime;
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.type = settings.type;
-      oscillator.frequency.setValueAtTime(settings.frequency, now);
-      if (kind === "success") oscillator.frequency.exponentialRampToValueAtTime(780, now + settings.duration);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(settings.volume, now + 0.012);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + settings.duration);
-      oscillator.connect(gain).connect(context.destination);
-      oscillator.start(now);
-      oscillator.stop(now + settings.duration + 0.02);
-    };
-
-    if (context.state === "suspended") {
-      void context.resume().then(schedule).catch(() => undefined);
-    } else {
-      schedule();
-    }
+    primeFeedbackSounds(audioRef);
+    const audio = audioRef.current[kind];
+    if (!audio) return;
+    audio.currentTime = 0;
+    void audio.play().catch(() => undefined);
   } catch {
     // Audio is optional feedback and must never interfere with the signup flow.
   }
@@ -59,7 +68,7 @@ export default function ClonaoWaitlistCard() {
   const [emailValid, setEmailValid] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const emailRef = useRef<HTMLInputElement>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioRef = useRef<Partial<Record<SoundKind, HTMLAudioElement>>>({});
   const focusSoundPlayedRef = useRef(false);
   const validSoundPlayedRef = useRef(false);
 
@@ -88,7 +97,7 @@ export default function ClonaoWaitlistCard() {
       .then(async (response) => {
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || "We couldn't join you to the waitlist. Please try again.");
-        playFeedbackSound("success", audioContextRef);
+        playFeedbackSound("success", audioRef);
         setStatus("idle");
         setStep("success");
       })
@@ -103,7 +112,7 @@ export default function ClonaoWaitlistCard() {
       <div className="clonao-waitlist-card__content">
         {step === "entry" ? <>
           <h2>Join Clonao early access</h2>
-          <button className={`clonao-waitlist-card__entry-button${isPressed ? " is-pressed" : ""}`} type="button" onClick={() => pressAndRun(() => { playFeedbackSound("click", audioContextRef); setStep("email"); })}>Join early access</button>
+          <button className={`clonao-waitlist-card__entry-button${isPressed ? " is-pressed" : ""}`} type="button" onClick={() => pressAndRun(() => { playFeedbackSound("click", audioRef); setStep("email"); })}>Join early access</button>
         </> : null}
 
         {step === "email" ? <>
@@ -112,7 +121,7 @@ export default function ClonaoWaitlistCard() {
             <label className="sr-only" htmlFor="waitlist-email">Email address</label>
             <span className={`clonao-waitlist-card__input-wrap${emailFocused ? " is-focused" : ""}${emailValid ? " is-valid" : ""}`}>
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6.5h16v11H4z" /><path d="m4.5 7 7.5 6 7.5-6" /></svg>
-              <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onFocus={() => { setEmailFocused(true); if (!focusSoundPlayedRef.current) { focusSoundPlayedRef.current = true; playFeedbackSound("focus", audioContextRef); } }} onBlur={() => setEmailFocused(false)} onChange={(event) => { const nextEmail = event.target.value; const nextIsValid = event.currentTarget.checkValidity(); setEmail(nextEmail); setEmailValid(nextIsValid); setStatus("idle"); setErrorMessage(""); if (nextIsValid && !validSoundPlayedRef.current) { validSoundPlayedRef.current = true; playFeedbackSound("valid", audioContextRef); } if (!nextIsValid) validSoundPlayedRef.current = false; }} />
+              <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required value={email} onFocus={() => { setEmailFocused(true); if (!focusSoundPlayedRef.current) { focusSoundPlayedRef.current = true; playFeedbackSound("focus", audioRef); } }} onBlur={() => setEmailFocused(false)} onChange={(event) => { const nextEmail = event.target.value; const nextIsValid = event.currentTarget.checkValidity(); setEmail(nextEmail); setEmailValid(nextIsValid); setStatus("idle"); setErrorMessage(""); if (nextIsValid && !validSoundPlayedRef.current) { validSoundPlayedRef.current = true; playFeedbackSound("valid", audioRef); } if (!nextIsValid) validSoundPlayedRef.current = false; }} />
               <span className="clonao-waitlist-card__valid-mark" aria-hidden="true">✓</span>
             </span>
             <button className={status === "joining" ? "is-joining" : ""} type="submit" disabled={status === "joining"}>{status === "joining" ? "Joining…" : "Get early access"}</button>
