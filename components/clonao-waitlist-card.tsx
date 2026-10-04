@@ -64,15 +64,9 @@ export default function ClonaoWaitlistCard() {
   }
 
   return (
-    <div className="clonao-portal-stage" ref={portalRef}>
-      <span className="clonao-portal-orbit" aria-hidden="true" />
-      <span className="clonao-portal-bubble clonao-portal-bubble--one" aria-hidden="true" />
-      <span className="clonao-portal-bubble clonao-portal-bubble--two" aria-hidden="true" />
-      <span className="clonao-portal-bubble clonao-portal-bubble--three" aria-hidden="true" />
-      <section className="clonao-waitlist-card" aria-live="polite">
-        <WaterRippleImage className="clonao-portal-image" src="https://i.postimg.cc/9XDFDLhc/Sunlit-Canopy-Framing-Blue-Skies.png" />
-        <span className="clonao-portal-glass" aria-hidden="true" />
-        <div className="clonao-waitlist-card__content">
+    <section className="clonao-ripple-waitlist" ref={portalRef} aria-live="polite">
+      <WaterRippleImage className="clonao-ripple-waitlist__image" src="https://cdn.21st.dev/assets/mirror/e7/e702fd6cb0650a2b72ccae34504b088191f3e2c2919e96041979779573843b67.jpg" />
+      <div className="clonao-ripple-waitlist__content">
         {step === "entry" ? <>
           <h2>Join Clonao early access</h2>
           <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => setStep("email")}>Join early access</button>
@@ -96,8 +90,7 @@ export default function ClonaoWaitlistCard() {
           <h2>You’re in.</h2>
           <p>You’re officially on the Clonao early-access list.</p>
         </div> : null}
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
