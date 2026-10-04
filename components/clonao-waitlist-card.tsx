@@ -1,7 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
-import WaterRippleImage from "./ui/water-ripple-image";
+import { FormEvent, useRef, useState } from "react";
 
 type Step = "entry" | "email" | "success";
 
@@ -11,29 +10,6 @@ export default function ClonaoWaitlistCard() {
   const [errorMessage, setErrorMessage] = useState("");
   const [email, setEmail] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
-  const portalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const portal = portalRef.current;
-    if (!portal) return;
-    const onPointerMove = (event: PointerEvent) => {
-      const bounds = portal.getBoundingClientRect();
-      const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
-      const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
-      portal.style.setProperty("--portal-mx", `${Math.max(-1, Math.min(1, x)) * 7}px`);
-      portal.style.setProperty("--portal-my", `${Math.max(-1, Math.min(1, y)) * 5}px`);
-    };
-    const onPointerLeave = () => {
-      portal.style.setProperty("--portal-mx", "0px");
-      portal.style.setProperty("--portal-my", "0px");
-    };
-    portal.addEventListener("pointermove", onPointerMove);
-    portal.addEventListener("pointerleave", onPointerLeave);
-    return () => {
-      portal.removeEventListener("pointermove", onPointerMove);
-      portal.removeEventListener("pointerleave", onPointerLeave);
-    };
-  }, []);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -64,9 +40,8 @@ export default function ClonaoWaitlistCard() {
   }
 
   return (
-    <section className="clonao-ripple-waitlist" ref={portalRef} aria-live="polite">
-      <WaterRippleImage className="clonao-ripple-waitlist__image" src="https://cdn.21st.dev/assets/mirror/e7/e702fd6cb0650a2b72ccae34504b088191f3e2c2919e96041979779573843b67.jpg" />
-      <div className="clonao-ripple-waitlist__content">
+    <section className="clonao-waitlist-card" aria-live="polite">
+      <div className="clonao-waitlist-card__content">
         {step === "entry" ? <>
           <h2>Join Clonao early access</h2>
           <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => setStep("email")}>Join early access</button>
