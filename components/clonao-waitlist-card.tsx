@@ -79,7 +79,7 @@ export default function ClonaoWaitlistCard() {
         </> : null}
 
         {step === "success" ? <div className="clonao-waitlist-card__success">
-          <h2>You’re in.</h2><p>Your Clonao early access is reserved.</p>
+          <h2>You’re in.</h2><p>You’re officially on the Clonao early access list.</p><p>We’ll send you an access invitation when Clonao is ready.</p>
           <p className="clonao-waitlist-card__success-prompt">Want to personalize your early access?</p>
           <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => { setQuestionIndex(0); setStep("personalize"); }}>Personalize my experience</button>
           <button className="clonao-waitlist-card__text-button" type="button" onClick={() => setStep("skipped")}>Skip for now</button>
@@ -111,7 +111,8 @@ export default function ClonaoWaitlistCard() {
 
         {step === "skipped" ? <div className="clonao-waitlist-card__success">
           <h2>You’re in.</h2>
-          <p>Your Clonao early access is reserved.</p>
+          <p>You’re officially on the Clonao early access list.</p>
+          <p>We’ll send you an access invitation when Clonao is ready.</p>
           <p className="clonao-waitlist-card__success-prompt">We’ll keep you updated as Clonao gets closer to launch.</p>
           <p>Expect product previews, founder updates, feature decisions, and your access invitation by email.</p>
         </div> : null}
