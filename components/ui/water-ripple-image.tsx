@@ -78,9 +78,14 @@ export default function WaterRippleImage({ src, className = "" }: WaterRippleIma
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     const upload = () => {
       if (!image.naturalWidth) return;
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+      try {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+      } catch {
+        // Some image hosts do not expose CORS headers. Keep the regular image fallback visible.
+        canvas.style.display = "none";
+      }
     };
     if (image.complete) upload(); else image.addEventListener("load", upload);
 
