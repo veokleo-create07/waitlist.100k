@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 type Step = "entry" | "email" | "success";
 
@@ -10,6 +10,29 @@ export default function ClonaoWaitlistCard() {
   const [errorMessage, setErrorMessage] = useState("");
   const [email, setEmail] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
+  const portalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const portal = portalRef.current;
+    if (!portal) return;
+    const onPointerMove = (event: PointerEvent) => {
+      const bounds = portal.getBoundingClientRect();
+      const x = ((event.clientX - bounds.left) / bounds.width - 0.5) * 2;
+      const y = ((event.clientY - bounds.top) / bounds.height - 0.5) * 2;
+      portal.style.setProperty("--portal-mx", `${Math.max(-1, Math.min(1, x)) * 7}px`);
+      portal.style.setProperty("--portal-my", `${Math.max(-1, Math.min(1, y)) * 5}px`);
+    };
+    const onPointerLeave = () => {
+      portal.style.setProperty("--portal-mx", "0px");
+      portal.style.setProperty("--portal-my", "0px");
+    };
+    portal.addEventListener("pointermove", onPointerMove);
+    portal.addEventListener("pointerleave", onPointerLeave);
+    return () => {
+      portal.removeEventListener("pointermove", onPointerMove);
+      portal.removeEventListener("pointerleave", onPointerLeave);
+    };
+  }, []);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,8 +63,15 @@ export default function ClonaoWaitlistCard() {
   }
 
   return (
-    <section className="clonao-waitlist-card" aria-live="polite">
-      <div className="clonao-waitlist-card__content">
+    <div className="clonao-portal-stage" ref={portalRef}>
+      <span className="clonao-portal-orbit" aria-hidden="true" />
+      <span className="clonao-portal-bubble clonao-portal-bubble--one" aria-hidden="true" />
+      <span className="clonao-portal-bubble clonao-portal-bubble--two" aria-hidden="true" />
+      <span className="clonao-portal-bubble clonao-portal-bubble--three" aria-hidden="true" />
+      <section className="clonao-waitlist-card" aria-live="polite">
+        <img className="clonao-portal-image" src="https://i.postimg.cc/9XDFDLhc/Sunlit-Canopy-Framing-Blue-Skies.png" alt="" aria-hidden="true" />
+        <span className="clonao-portal-glass" aria-hidden="true" />
+        <div className="clonao-waitlist-card__content">
         {step === "entry" ? <>
           <h2>Join Clonao early access</h2>
           <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => setStep("email")}>Join early access</button>
@@ -63,9 +93,10 @@ export default function ClonaoWaitlistCard() {
 
         {step === "success" ? <div className="clonao-waitlist-card__success">
           <h2>You’re in.</h2>
-          <p>You’re officially on the Clonao early access list. We’ll send you an access invitation when Clonao is ready.</p>
+          <p>You’re officially on the Clonao early-access list.</p>
         </div> : null}
-      </div>
-    </section>
+        </div>
+      </section>
+    </div>
   );
 }
