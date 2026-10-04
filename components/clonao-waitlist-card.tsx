@@ -44,7 +44,6 @@ export default function ClonaoWaitlistCard() {
       <div className="clonao-waitlist-card__content">
         {step === "entry" ? <>
           <h2>Join Clonao early access</h2>
-          <p className="clonao-waitlist-card__subline">Get product previews, founder updates, and first access when Clonao launches.</p>
           <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => setStep("email")}>Join early access</button>
         </> : null}
 
