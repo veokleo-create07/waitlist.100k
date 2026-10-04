@@ -18,23 +18,31 @@ function playFeedbackSound(kind: SoundKind, contextRef: MutableRefObject<AudioCo
     if (context.state === "suspended") void context.resume();
 
     const settings = {
-      click: { frequency: 420, duration: 0.12, volume: 0.13, type: "sine" as OscillatorType },
-      focus: { frequency: 620, duration: 0.16, volume: 0.09, type: "sine" as OscillatorType },
-      valid: { frequency: 920, duration: 0.13, volume: 0.1, type: "sine" as OscillatorType },
-      success: { frequency: 520, duration: 0.62, volume: 0.16, type: "sine" as OscillatorType },
+      click: { frequency: 420, duration: 0.12, volume: 0.2, type: "sine" as OscillatorType },
+      focus: { frequency: 620, duration: 0.16, volume: 0.16, type: "sine" as OscillatorType },
+      valid: { frequency: 920, duration: 0.13, volume: 0.18, type: "sine" as OscillatorType },
+      success: { frequency: 520, duration: 0.62, volume: 0.22, type: "sine" as OscillatorType },
     }[kind];
-    const now = context.currentTime;
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    oscillator.type = settings.type;
-    oscillator.frequency.setValueAtTime(settings.frequency, now);
-    if (kind === "success") oscillator.frequency.exponentialRampToValueAtTime(780, now + settings.duration);
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(settings.volume, now + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + settings.duration);
-    oscillator.connect(gain).connect(context.destination);
-    oscillator.start(now);
-    oscillator.stop(now + settings.duration + 0.02);
+    const schedule = () => {
+      const now = context.currentTime;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = settings.type;
+      oscillator.frequency.setValueAtTime(settings.frequency, now);
+      if (kind === "success") oscillator.frequency.exponentialRampToValueAtTime(780, now + settings.duration);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(settings.volume, now + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + settings.duration);
+      oscillator.connect(gain).connect(context.destination);
+      oscillator.start(now);
+      oscillator.stop(now + settings.duration + 0.02);
+    };
+
+    if (context.state === "suspended") {
+      void context.resume().then(schedule).catch(() => undefined);
+    } else {
+      schedule();
+    }
   } catch {
     // Audio is optional feedback and must never interfere with the signup flow.
   }
