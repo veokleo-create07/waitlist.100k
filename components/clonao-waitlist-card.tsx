@@ -40,8 +40,14 @@ export default function ClonaoWaitlistCard() {
   }
 
   return (
-    <section className="clonao-waitlist-card" aria-live="polite">
-      <div className="clonao-waitlist-card__content">
+    <div className="clonao-portal-stage">
+      <div className="clonao-portal-orbit" aria-hidden="true" />
+      <div className="clonao-portal-bubble clonao-portal-bubble--one" aria-hidden="true" />
+      <div className="clonao-portal-bubble clonao-portal-bubble--two" aria-hidden="true" />
+      <section className="clonao-waitlist-card clonao-portal-card" aria-live="polite">
+        <img className="clonao-portal-image" src="https://i.postimg.cc/9XDFDLhc/Sunlit-Canopy-Framing-Blue-Skies.png" alt="" aria-hidden="true" />
+        <div className="clonao-portal-glass" aria-hidden="true" />
+        <div className="clonao-waitlist-card__content">
         {step === "entry" ? <>
           <h2>Join Clonao early access</h2>
           <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => setStep("email")}>Join early access</button>
@@ -65,7 +71,8 @@ export default function ClonaoWaitlistCard() {
           <h2>You’re in.</h2>
           <p>You’re officially on the Clonao early-access list.</p>
         </div> : null}
-      </div>
-    </section>
+        </div>
+      </section>
+    </div>
   );
 }

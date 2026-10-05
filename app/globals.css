@@ -262,6 +262,40 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 @media (max-width: 800px) { .privacy-nav, .privacy-layout, .privacy-footer { width: min(100% - 36px, 740px); }.privacy-layout { display: block; padding: 68px 0 80px; }.privacy-header { padding-bottom: 48px; }.privacy-sidebar { display: none; }.privacy-prose { font-size: 16px; }.privacy-prose h2 { font-size: 27px; }.privacy-footer { flex-wrap: wrap; gap: 12px 20px; } }
 @media (prefers-reduced-motion: reduce) { .privacy-sidebar a { transition: none; } }
 
+/* Nature-filled liquid-glass portal for the primary waitlist entry point. */
+.clonao-portal-stage { width: min(100%, 920px); margin: 44px auto 0; padding: 38px 0 54px; position: relative; isolation: isolate; }
+.clonao-portal-card { width: min(100%, 860px); min-height: 330px; margin: 0 auto; position: relative; z-index: 2; overflow: hidden; border-radius: 25% 18% 22% 17% / 25% 20% 24% 19%; transform: perspective(1400px) rotateZ(-3.5deg); transform-origin: 50% 50%; animation: clonao-portal-float 8s ease-in-out infinite; }
+.clonao-portal-card::before { z-index: 2; background: linear-gradient(118deg, rgb(255 255 255 / .46), transparent 18%, transparent 58%, rgb(235 251 255 / .22)); mix-blend-mode: screen; }
+.clonao-portal-card .clonao-waitlist-card__content { min-height: 330px; display: flex; flex-direction: column; justify-content: center; padding: 64px 76px 48px; position: relative; z-index: 3; border-radius: inherit; background: transparent; transform: rotateZ(3.5deg); }
+.clonao-portal-card h2 { text-shadow: 0 2px 16px rgb(0 55 135 / .32); }
+.clonao-portal-image { width: 106%; height: 118%; position: absolute; z-index: 0; top: -9%; left: -3%; object-fit: cover; object-position: center 54%; opacity: .88; filter: saturate(.92) contrast(.96); animation: clonao-portal-image-drift 12s ease-in-out infinite alternate; }
+.clonao-portal-glass { position: absolute; z-index: 1; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 4%, rgb(255 255 255 / .32), transparent 34%), linear-gradient(180deg, rgb(115 202 255 / .08), rgb(44 121 218 / .1) 55%, rgb(238 251 255 / .2)); }
+.clonao-portal-card::after { content: ""; position: absolute; z-index: 4; inset: 1px; pointer-events: none; border-radius: inherit; border: 1px solid rgb(255 255 255 / .48); box-shadow: inset 11px 10px 24px rgb(255 255 255 / .2), inset -11px -12px 28px rgb(31 97 220 / .1); }
+.clonao-portal-card .clonao-waitlist-card__input-wrap { background: rgb(255 255 255 / .13); box-shadow: inset 0 1px rgb(255 255 255 / .5), 0 0 22px rgb(219 243 255 / .18); }
+.clonao-portal-card .clonao-waitlist-card__consent { text-shadow: 0 1px 6px rgb(0 55 135 / .38); }
+.clonao-portal-orbit { width: 116%; height: 58%; position: absolute; z-index: 1; top: 23%; left: -8%; border: 1px solid rgb(239 252 255 / .42); border-left-color: transparent; border-right-color: transparent; border-radius: 50%; transform: rotate(-10deg); opacity: .72; animation: clonao-portal-orbit 16s linear infinite; pointer-events: none; }
+.clonao-portal-orbit::after { content: ""; width: 16%; height: 2px; position: absolute; top: -1px; left: 56%; border-radius: 50%; background: rgb(255 255 255 / .82); box-shadow: 0 0 11px rgb(220 248 255 / .9); }
+.clonao-portal-bubble { position: absolute; z-index: 3; border: 1px solid rgb(255 255 255 / .54); border-radius: 50%; background: rgb(255 255 255 / .14); box-shadow: inset 1px 1px 5px rgb(255 255 255 / .42), 0 0 20px rgb(174 226 255 / .3); backdrop-filter: blur(8px); animation: clonao-portal-bubble 9s ease-in-out infinite; pointer-events: none; }
+.clonao-portal-bubble--one { width: 25px; height: 25px; top: 18%; left: 6%; }
+.clonao-portal-bubble--two { width: 16px; height: 16px; right: 6%; bottom: 20%; animation-delay: -3s; }
+@keyframes clonao-portal-float { 0%, 100% { transform: perspective(1400px) translateY(-3px) rotateZ(-3.5deg); } 50% { transform: perspective(1400px) translateY(3px) rotateZ(-3deg); } }
+@keyframes clonao-portal-image-drift { from { transform: scale(1.04) translate3d(-1%, 0, 0); } to { transform: scale(1.08) translate3d(1%, -1%, 0); } }
+@keyframes clonao-portal-orbit { from { transform: rotate(-10deg) translateX(-2%); } to { transform: rotate(-10deg) translateX(2%); } }
+@keyframes clonao-portal-bubble { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(5px, -9px, 0); } }
+@media (max-width: 700px) {
+  .clonao-portal-stage { width: calc(100% - 4px); margin-top: 28px; padding: 26px 0 34px; }
+  .clonao-portal-card { min-height: 290px; border-radius: 24% 19% 22% 17% / 20% 18% 22% 17%; transform: rotateZ(-1.8deg); }
+  .clonao-portal-card .clonao-waitlist-card__content { min-height: 290px; padding: 42px 18px 28px; transform: rotateZ(1.8deg); }
+  .clonao-portal-image { object-position: center 53%; }
+  .clonao-portal-orbit { width: 124%; left: -12%; top: 25%; }
+  .clonao-portal-bubble--one { left: 1%; }
+  .clonao-portal-bubble--two { right: 1%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .clonao-portal-card, .clonao-portal-image, .clonao-portal-orbit, .clonao-portal-bubble { animation: none; }
+  .clonao-portal-image { transform: scale(1.04); }
+}
+
 .orbit-hero { position: relative; min-height: 900px; overflow: hidden; color: white; background: linear-gradient(180deg, #0b4dff 0%, #2d7cff 31%, #8ccbff 64%, #f8fbfd 100%); }
 .orbit-hero__glow { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 50% 13%, rgb(255 255 255 / .2), transparent 31%), radial-gradient(circle at 50% 80%, rgb(255 255 255 / .3), transparent 34%); }
 .orbit-hero__shell { width: min(1180px, calc(100% - 48px)); min-height: 900px; margin: 0 auto; position: relative; z-index: 1; }
