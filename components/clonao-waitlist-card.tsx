@@ -34,6 +34,7 @@ export default function ClonaoWaitlistCard() {
       .then(async (response) => {
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || "We couldn't join you to the waitlist. Please try again.");
+        await new Promise((resolve) => window.setTimeout(resolve, 700));
         setStatus("idle");
         setStep("success");
       })
@@ -64,7 +65,7 @@ export default function ClonaoWaitlistCard() {
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6.5h16v11H4z" /><path d="m4.5 7 7.5 6 7.5-6" /></svg>
                     <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required disabled={status === "joining"} value={email} onChange={(event) => { setEmail(event.target.value); setStatus("idle"); setErrorMessage(""); }} />
                   </span>
-                  <button type="submit" disabled={status === "joining"}>{status === "joining" ? <><span>Joining</span><span className="clonao-waitlist-card__loading-dots" aria-hidden="true"><i /><i /><i /></span></> : <>Get early access <SendIcon ref={sendIconRef} size={20} duration={0.85} /></>}</button>
+                  <button type="submit" disabled={status === "joining"}>{status === "joining" ? <><span>Joining</span><span className="clonao-waitlist-card__loading-shimmer" aria-hidden="true" /></> : <>Get early access <SendIcon ref={sendIconRef} size={20} duration={0.85} /></>}</button>
                 </form>
                 <p className="clonao-waitlist-card__consent">By joining, you agree to receive Clonao waitlist, early-access and launch emails. Unsubscribe anytime. <a href="/privacy">Privacy Policy</a>.</p>
                 <p className={`clonao-waitlist-card__status${status === "error" ? " is-error" : ""}`} role="status">{status === "error" ? errorMessage : ""}</p>
@@ -73,11 +74,13 @@ export default function ClonaoWaitlistCard() {
 
             {step === "success" ? (
               <m.div key="success" className="clonao-waitlist-card__state clonao-waitlist-card__success" initial={{ opacity: 0, y: 10, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 240, damping: 25 }}>
+                <m.div className="clonao-waitlist-card__success-glow" aria-hidden="true" initial={{ opacity: .65, scale: .45 }} animate={{ opacity: 0, scale: 1.7 }} transition={{ duration: .8, ease: "easeOut" }} />
                 <m.svg className="clonao-waitlist-card__success-check" viewBox="0 0 24 24" fill="none" aria-hidden="true" initial={{ opacity: 0, scale: .7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .28, ease: "easeOut" }}>
                   <m.path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: .52, delay: .1, ease: "easeOut" }} />
                 </m.svg>
                 <m.h2 initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .16, duration: .3 }}>You’re in</m.h2>
-                <m.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .23, duration: .34 }}>You’re officially on the Clonao early-access list.</m.p>
+                <m.p className="clonao-waitlist-card__success-lead" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .23, duration: .34 }}>Early access secured.</m.p>
+                <m.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3, duration: .34 }}>We’ll email you when Clonao opens.</m.p>
               </m.div>
             ) : null}
           </AnimatePresence>
