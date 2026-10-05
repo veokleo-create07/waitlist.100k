@@ -47,7 +47,6 @@ export default function ClonaoWaitlistCard() {
     <section className="clonao-waitlist-card" aria-live="polite">
       <div className="clonao-waitlist-card__content">
         {step === "entry" ? <>
-          <h2>Join Clonao early access</h2>
           <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => setStep("email")}>Join early access</button>
         </> : null}
 
