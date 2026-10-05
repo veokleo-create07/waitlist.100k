@@ -3,6 +3,7 @@
 import { FormEvent, useRef, useState } from "react";
 import { AnimatePresence, LazyMotion, domAnimation, m } from "motion/react";
 import { SendIcon, type SendIconHandle } from "./send-icon";
+import { playJoinSound, playSuccessSound, playTypingSound } from "../lib/ui-sounds";
 
 type Step = "entry" | "email" | "success";
 
@@ -35,6 +36,7 @@ export default function ClonaoWaitlistCard() {
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || "We couldn't join you to the waitlist. Please try again.");
         await new Promise((resolve) => window.setTimeout(resolve, 700));
+        playSuccessSound();
         setStatus("idle");
         setStep("success");
       })
@@ -52,7 +54,7 @@ export default function ClonaoWaitlistCard() {
           <AnimatePresence mode="wait" initial={false}>
             {step === "entry" ? (
               <m.div key="entry" className="clonao-waitlist-card__state clonao-waitlist-card__entry" initial={{ opacity: 0, y: 8, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: .98 }} transition={{ type: "spring", stiffness: 280, damping: 26 }}>
-                <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => setStep("email")}>Join early access</button>
+                <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => { playJoinSound(); setStep("email"); }}>Join early access</button>
               </m.div>
             ) : null}
 
@@ -63,9 +65,9 @@ export default function ClonaoWaitlistCard() {
                   <label className="sr-only" htmlFor="waitlist-email">Email address</label>
                   <span className="clonao-waitlist-card__input-wrap">
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6.5h16v11H4z" /><path d="m4.5 7 7.5 6 7.5-6" /></svg>
-                    <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required disabled={status === "joining"} value={email} onChange={(event) => { setEmail(event.target.value); setStatus("idle"); setErrorMessage(""); }} />
+                    <input ref={emailRef} id="waitlist-email" name="email" type="email" placeholder="Email address" autoComplete="email" required disabled={status === "joining"} value={email} onKeyDown={(event) => { if (event.key.length === 1) playTypingSound(); }} onChange={(event) => { setEmail(event.target.value); setStatus("idle"); setErrorMessage(""); }} />
                   </span>
-                  <button type="submit" disabled={status === "joining"}>{status === "joining" ? <><span>Joining</span><span className="clonao-waitlist-card__loading-shimmer" aria-hidden="true" /></> : <>Get early access <SendIcon ref={sendIconRef} size={20} duration={0.85} /></>}</button>
+                  <button type="submit" disabled={status === "joining"} onClick={() => { if (status !== "joining" && emailRef.current?.checkValidity()) playJoinSound(); }}>{status === "joining" ? <><span>Joining</span><span className="clonao-waitlist-card__loading-shimmer" aria-hidden="true" /></> : <>Get early access <SendIcon ref={sendIconRef} size={20} duration={0.85} /></>}</button>
                 </form>
                 <p className="clonao-waitlist-card__consent">By joining, you agree to receive Clonao waitlist, early-access and launch emails. Unsubscribe anytime. <a href="/privacy">Privacy Policy</a>.</p>
                 <p className={`clonao-waitlist-card__status${status === "error" ? " is-error" : ""}`} role="status">{status === "error" ? errorMessage : ""}</p>
