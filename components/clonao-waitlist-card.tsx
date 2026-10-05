@@ -80,9 +80,7 @@ export default function ClonaoWaitlistCard() {
                     <m.path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: .52, delay: .1, ease: "easeOut" }} />
                   </m.svg>
                 </div>
-                <m.h2 initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .16, duration: .3 }}>You’re in</m.h2>
-                <m.p className="clonao-waitlist-card__success-lead" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .23, duration: .34 }}>Early access secured.</m.p>
-                <m.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3, duration: .34 }}>We’ll email you when Clonao opens.</m.p>
+                <m.h2 initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .16, duration: .3 }}>You’re in. Check your inbox.</m.h2>
               </m.div>
             ) : null}
           </AnimatePresence>
