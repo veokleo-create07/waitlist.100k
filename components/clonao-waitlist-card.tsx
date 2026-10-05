@@ -77,7 +77,15 @@ export default function ClonaoWaitlistCard() {
                 <div className="clonao-waitlist-card__success-mark">
                   <m.div className="clonao-waitlist-card__success-glow" aria-hidden="true" initial={{ opacity: .72, scale: .45 }} animate={{ opacity: 0, scale: 1.75 }} transition={{ duration: .85, ease: "easeOut" }} />
                   <m.svg className="clonao-waitlist-card__success-check" viewBox="0 0 24 24" fill="none" aria-hidden="true" initial={{ opacity: 0, scale: .7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .28, ease: "easeOut" }}>
-                    <m.path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: .52, delay: .1, ease: "easeOut" }} />
+                    <defs>
+                      <linearGradient id="clonao-metal-check" x1="4" y1="19" x2="20" y2="5" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#b9ddf4" />
+                        <stop offset=".46" stopColor="#ffffff" />
+                        <stop offset=".72" stopColor="#e4f6ff" />
+                        <stop offset="1" stopColor="#ffffff" />
+                      </linearGradient>
+                    </defs>
+                    <m.path d="m5 12.5 4.5 4.5L19 7.5" stroke="url(#clonao-metal-check)" strokeWidth="2.35" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: .58, delay: .1, ease: "easeOut" }} />
                   </m.svg>
                 </div>
                 <m.h2 initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .16, duration: .3 }}>You’re in. Check your inbox.</m.h2>
