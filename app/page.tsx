@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import ClonaoFooter from "../components/clonao-footer";
+import ClonaoGlassInteraction from "../components/clonao-glass-interaction";
 import ClonaoWaitlistCard from "../components/clonao-waitlist-card";
 
 export default function Home() {
@@ -28,6 +29,7 @@ export default function Home() {
             className="hero-scene-image"
           />
         </div>
+        <ClonaoGlassInteraction />
         <nav className="navbar" aria-label="Primary navigation">
         <a className="brand" href="#top" aria-label="Clonao home">
           <img className="brand-mark" src="/clonao-logo.png" alt="" aria-hidden="true" />
