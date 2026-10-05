@@ -74,10 +74,12 @@ export default function ClonaoWaitlistCard() {
 
             {step === "success" ? (
               <m.div key="success" className="clonao-waitlist-card__state clonao-waitlist-card__success" initial={{ opacity: 0, y: 10, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ type: "spring", stiffness: 240, damping: 25 }}>
-                <m.div className="clonao-waitlist-card__success-glow" aria-hidden="true" initial={{ opacity: .65, scale: .45 }} animate={{ opacity: 0, scale: 1.7 }} transition={{ duration: .8, ease: "easeOut" }} />
-                <m.svg className="clonao-waitlist-card__success-check" viewBox="0 0 24 24" fill="none" aria-hidden="true" initial={{ opacity: 0, scale: .7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .28, ease: "easeOut" }}>
-                  <m.path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: .52, delay: .1, ease: "easeOut" }} />
-                </m.svg>
+                <div className="clonao-waitlist-card__success-mark">
+                  <m.div className="clonao-waitlist-card__success-glow" aria-hidden="true" initial={{ opacity: .72, scale: .45 }} animate={{ opacity: 0, scale: 1.75 }} transition={{ duration: .85, ease: "easeOut" }} />
+                  <m.svg className="clonao-waitlist-card__success-check" viewBox="0 0 24 24" fill="none" aria-hidden="true" initial={{ opacity: 0, scale: .7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .28, ease: "easeOut" }}>
+                    <m.path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: .52, delay: .1, ease: "easeOut" }} />
+                  </m.svg>
+                </div>
                 <m.h2 initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .16, duration: .3 }}>You’re in</m.h2>
                 <m.p className="clonao-waitlist-card__success-lead" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .23, duration: .34 }}>Early access secured.</m.p>
                 <m.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .3, duration: .34 }}>We’ll email you when Clonao opens.</m.p>
