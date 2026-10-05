@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import ClonaoFooter from "../components/clonao-footer";
 import ClonaoWaitlistCard from "../components/clonao-waitlist-card";
 
@@ -16,7 +17,18 @@ export default function Home() {
   return (
     <>
       <main className="hero-atmosphere">
-      <nav className="navbar" aria-label="Primary navigation">
+        <div className="hero-scene-layer" aria-hidden="true">
+          <Image
+            src="https://i.postimg.cc/N04PPG0C/Glass-Capsule-Among-the-Clouds.png"
+            alt=""
+            fill
+            priority
+            unoptimized
+            sizes="100vw"
+            className="hero-scene-image"
+          />
+        </div>
+        <nav className="navbar" aria-label="Primary navigation">
         <a className="brand" href="#top" aria-label="Clonao home">
           <img className="brand-mark" src="/clonao-logo.png" alt="" aria-hidden="true" />
           <span>Clonao</span>
@@ -27,18 +39,17 @@ export default function Home() {
         <div className={`nav-links${menuOpen ? " is-open" : ""}`} id="primary-menu">
           {["Product", "How it works", "Pricing", "Resources"].map((item) => <a href={`#${item.toLowerCase().replaceAll(" ", "-")}`} key={item} onClick={() => setMenuOpen(false)}>{item}</a>)}
         </div>
-      </nav>
+        </nav>
 
-      <section className="hero" id="top">
-        <img className="hero-scene-layer" src="https://i.postimg.cc/N04PPG0C/Glass-Capsule-Among-the-Clouds.png" alt="" aria-hidden="true" />
-        <div className="hero-copy reveal">
-          <h1>The #1 Personal Brand AI for LinkedIn.</h1>
-          <p>Clonao analyzes your personal brand, identifies the gaps, builds the strategy and tells you exactly what to focus on next.</p>
-        </div>
+        <section className="hero" id="top">
+          <div className="hero-copy reveal">
+            <h1>The #1 Personal Brand AI for LinkedIn.</h1>
+            <p>Clonao analyzes your personal brand, identifies the gaps, builds the strategy and tells you exactly what to focus on next.</p>
+          </div>
 
-        <ClonaoWaitlistCard />
+          <ClonaoWaitlistCard />
 
-      </section>
+        </section>
       </main>
       <ClonaoFooter />
     </>
