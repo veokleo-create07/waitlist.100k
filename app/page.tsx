@@ -30,7 +30,6 @@ export default function Home() {
       </nav>
 
       <section className="hero" id="top">
-        <img className="hero-scene-layer" src="https://i.postimg.cc/N04PPG0C/Glass-Capsule-Among-the-Clouds.png" alt="" aria-hidden="true" />
         <div className="hero-copy reveal">
           <h1>The #1 Personal Brand AI for LinkedIn.</h1>
           <p>Clonao analyzes your personal brand, identifies the gaps, builds the strategy and tells you exactly what to focus on next.</p>
