@@ -257,11 +257,11 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 /* Keep the CTA visually connected to the hero copy. */
 .hero-copy p { margin-top: 28px; }
 .clonao-waitlist-card { margin-top: 12px; }
-.clonao-waitlist-card__entry { margin-top: -88px; }
+.clonao-waitlist-card__entry { position: relative; top: -56px; margin-top: -88px; }
 @media (max-width: 700px) {
   .hero-copy p { margin-top: 18px; }
   .clonao-waitlist-card { margin-top: 16px; }
-  .clonao-waitlist-card__entry { margin-top: -68px; }
+  .clonao-waitlist-card__entry { top: -36px; margin-top: -68px; }
 }
 
 /* Bring the next section closer while preserving a comfortable hero minimum. */
