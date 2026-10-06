@@ -32,7 +32,7 @@ export default function Home() {
       <section className="hero" id="top">
         <div className="hero-copy reveal">
           <h1>The #1 Personal Brand AI for LinkedIn.</h1>
-          <p>Clonao analyzes your personal brand, identifies the gaps, builds the strategy and tells you exactly what to focus on next.</p>
+            <p>Clonao finds the gaps in your brand and tells you what to focus on next.</p>
         </div>
 
         <ClonaoWaitlistCard />
