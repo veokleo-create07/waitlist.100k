@@ -1,18 +1,7 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import ClonaoFooter from "../components/clonao-footer";
 import ClonaoWaitlistCard from "../components/clonao-waitlist-card";
 
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setMenuOpen(false); };
-    document.addEventListener("keydown", closeOnEscape);
-    return () => document.removeEventListener("keydown", closeOnEscape);
-  }, []);
-
   return (
     <>
       <main className="hero-atmosphere">
@@ -21,11 +10,8 @@ export default function Home() {
           <img className="brand-mark" src="/clonao-logo.png" alt="" aria-hidden="true" />
           <span>Clonao</span>
         </a>
-        <button className="menu-toggle" type="button" aria-expanded={menuOpen} aria-controls="primary-menu" aria-label={menuOpen ? "Close menu" : "Open menu"} onClick={() => setMenuOpen((open) => !open)}>
-          <span /><span />
-        </button>
-        <div className={`nav-links${menuOpen ? " is-open" : ""}`} id="primary-menu">
-          {["Product", "How it works", "Pricing", "Resources"].map((item) => <a href={`#${item.toLowerCase().replaceAll(" ", "-")}`} key={item} onClick={() => setMenuOpen(false)}>{item}</a>)}
+        <div className="nav-links" id="primary-menu">
+          {["Product", "How it works", "Pricing", "Resources"].map((item) => <a href={`#${item.toLowerCase().replaceAll(" ", "-")}`} key={item}>{item}</a>)}
         </div>
       </nav>
 
