@@ -7,8 +7,8 @@ a { color: inherit; text-decoration: none; }
 button, input { font: inherit; }
 .hero-atmosphere { min-height: 100vh; overflow: hidden; background: radial-gradient(circle at 50% -12%, rgb(255 255 255 / .2), transparent 34%), linear-gradient(180deg, #0b4dff 0%, #2d7cff 24%, #8ccbff 52%, #dceeff 78%, #f8fbfd 100%); }
 .navbar { width: min(1180px, calc(100% - 48px)); height: 80px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
-.navbar .nav-links { order: 1; }
-.navbar .brand { order: 2; }
+.navbar .brand { order: 1; }
+.navbar .nav-links { order: 2; }
 .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; letter-spacing: -.04em; }
 .brand-mark { width: 42px; height: 34px; display: block; object-fit: contain; filter: drop-shadow(0 2px 3px rgb(0 35 120 / .25)); }
 .nav-links { display: flex; gap: 28px; color: rgb(255 255 255 / .8); font-size: 14px; font-weight: 500; }
@@ -248,7 +248,7 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 .sr-only { width: 1px; height: 1px; padding: 0; position: absolute; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 @keyframes reveal { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes sheen { 0%, 75%, 100% { opacity: .25; transform: translateX(-8%); } 40% { opacity: .8; transform: translateX(8%); } }
-@media (max-width: 640px) { .navbar, .hero { width: min(100% - 32px, 1180px); }.navbar { height: 68px; justify-content: flex-end; }.menu-toggle { display: none; }.nav-links { display: none; }.hero { padding-top: 76px; padding-bottom: 48px; }.hero-copy p { max-width: 620px; margin-top: 16px; font-size: 19px; line-height: 1.35; }.waitlist { margin-top: 22px; padding: 20px; border-radius: 20px; }.waitlist-form { flex-direction: column; }.waitlist-form input, .waitlist-form button { width: 100%; }.demo-wrap { margin-top: 10px; padding: 22px 12px 0; border-radius: 16px 16px 0 0; }.demo-wrap img { border-radius: 8px 8px 0 0; } }
+@media (max-width: 640px) { .navbar, .hero { width: min(100% - 32px, 1180px); }.navbar { height: 68px; justify-content: flex-start; }.menu-toggle { display: none; }.nav-links { display: none; }.hero { padding-top: 76px; padding-bottom: 48px; }.hero-copy p { max-width: 620px; margin-top: 16px; font-size: 19px; line-height: 1.35; }.waitlist { margin-top: 22px; padding: 20px; border-radius: 20px; }.waitlist-form { flex-direction: column; }.waitlist-form input, .waitlist-form button { width: 100%; }.demo-wrap { margin-top: 10px; padding: 22px 12px 0; border-radius: 16px 16px 0 0; }.demo-wrap img { border-radius: 8px 8px 0 0; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
 
 /* Keep the waitlist content directly on the existing hero background. */
