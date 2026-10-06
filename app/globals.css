@@ -395,7 +395,8 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 .clonao-waitlist-card__input-wrap { height: 58px; padding: 0 20px; border-radius: 18px; }
 .clonao-waitlist-card__input-wrap svg { width: 24px; height: 24px; margin-right: 15px; }
 .clonao-waitlist-card__input-wrap input { font-size: 18px; }
-.clonao-waitlist-card__form button, .clonao-waitlist-card__entry-button { height: 58px; border-radius: 18px; font-size: 18px; }
+.clonao-waitlist-card__form button { height: 58px; border-radius: 18px; font-size: 18px; }
+.clonao-waitlist-card__entry-button { font-size: 16px; }
 .clonao-waitlist-card__consent { margin-top: 20px; font-size: 12px; }
 @media (max-width: 640px) {
   .clonao-waitlist-card { width: 100%; margin-top: 22px; border-radius: 24px; }
@@ -405,7 +406,8 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
   .clonao-waitlist-card__input-wrap { height: 54px; padding: 0 15px; border-radius: 16px; }
   .clonao-waitlist-card__input-wrap svg { width: 21px; height: 21px; margin-right: 12px; }
   .clonao-waitlist-card__input-wrap input { font-size: 16px; }
-  .clonao-waitlist-card__form button, .clonao-waitlist-card__entry-button { height: 54px; border-radius: 16px; font-size: 16px; }
+  .clonao-waitlist-card__form button { height: 54px; border-radius: 16px; font-size: 16px; }
+  .clonao-waitlist-card__entry-button { font-size: 15px; }
   .clonao-waitlist-card__options { gap: 8px; margin-top: 18px; }
   .clonao-waitlist-card__options button { min-height: 46px; padding: 8px 11px; font-size: 13px; }
 }
