@@ -47,7 +47,7 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
 .clonao-waitlist-card__form button:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: inset 0 1px rgb(255 255 255 / .62), 0 10px 22px rgb(0 39 98 / .34), 0 0 28px rgb(95 177 255 / .22); }
 .clonao-waitlist-card__form button:disabled { opacity: .82; cursor: wait; transform: scale(.985); }
 .clonao-waitlist-card__form button:focus-visible { outline: 3px solid rgb(190 230 255 / .78); outline-offset: 3px; }
-.clonao-waitlist-card__entry-button { width: 176px; height: 42px; margin-top: 8px; padding: 0 14px; border: 1px solid rgb(159 225 255 / .72); border-radius: 10px; color: white; background: linear-gradient(180deg, #63c3ff 0%, #1197f5 36%, #095dd9 72%, #0846b5 100%); box-shadow: inset 0 1px rgb(255 255 255 / .78), inset 0 -1px rgb(0 46 160 / .14), 0 5px 12px rgb(0 46 160 / .18), 0 0 15px rgb(55 174 255 / .3); cursor: pointer; font-size: 15px; font-weight: 500; text-shadow: 0 1px 4px rgb(0 44 123 / .2); transition: transform .2s ease, filter .2s ease, box-shadow .2s ease; }
+.clonao-waitlist-card__entry-button { width: 180px; height: 48px; margin-top: 8px; border: 1px solid rgb(159 225 255 / .78); border-radius: 12px; color: white; background: linear-gradient(180deg, #63c3ff 0%, #1197f5 36%, #095dd9 72%, #0846b5 100%); box-shadow: inset 0 1px rgb(255 255 255 / .82), inset 0 -1px rgb(0 46 160 / .18), 0 7px 16px rgb(0 46 160 / .24), 0 0 21px rgb(55 174 255 / .42); cursor: pointer; font-size: 15px; font-weight: 500; text-shadow: 0 1px 4px rgb(0 44 123 / .22); transition: transform .2s ease, filter .2s ease, box-shadow .2s ease; }
 .clonao-waitlist-card__entry-button:hover { filter: brightness(1.08); transform: translateY(-1px); box-shadow: inset 0 1px rgb(255 255 255 / .78), 0 10px 22px rgb(0 39 98 / .34), 0 0 28px rgb(95 177 255 / .22); }
 .clonao-waitlist-card__entry-button:focus-visible { outline: 3px solid rgb(190 230 255 / .78); outline-offset: 3px; }
 .clonao-waitlist-card__consent { margin: 28px auto 0; max-width: 610px; color: rgb(255 255 255 / .82); font-size: 14px; line-height: 1.5; text-align: center; text-shadow: 0 1px 4px rgb(0 55 135 / .22); }
@@ -210,7 +210,7 @@ h1 { margin: 0; font-size: clamp(44px, 7vw, 72px); line-height: 1.04; letter-spa
   .clonao-waitlist-card__input-wrap svg { width: 23px; height: 23px; margin-right: 15px; }
   .clonao-waitlist-card__input-wrap input { font-size: 17px; }
   .clonao-waitlist-card__form button { height: 60px; border-radius: 18px; font-size: 16px; }
-  .clonao-waitlist-card__entry-button { width: min(100%, 280px); height: 46px; border-radius: 10px; font-size: 15px; }
+  .clonao-waitlist-card__entry-button { width: min(100%, 280px); height: 50px; border-radius: 12px; font-size: 15px; }
   .clonao-waitlist-card__consent { margin-top: 22px; font-size: 12px; }
 }
 .clonao-waitlist-card__success p { margin: 0; color: rgb(225 240 255 / .76); font-size: 14px; }
