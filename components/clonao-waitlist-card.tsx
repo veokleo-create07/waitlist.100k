@@ -55,6 +55,10 @@ export default function ClonaoWaitlistCard() {
             {step === "entry" ? (
               <m.div key="entry" className="clonao-waitlist-card__state clonao-waitlist-card__entry" initial={{ opacity: 0, y: 8, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8, scale: .98 }} transition={{ type: "spring", stiffness: 280, damping: 26 }}>
                 <button className="clonao-waitlist-card__entry-button" type="button" onClick={() => { playJoinSound(); setStep("email"); }}>Join early access</button>
+                <div className="clonao-waitlist-card__entry-proof">
+                  <p className="clonao-waitlist-card__entry-proof-headline">The next era of personal branding starts here.</p>
+                  <p className="clonao-waitlist-card__entry-proof-users"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg><span>100+ early users are already in. Are you next?</span></p>
+                </div>
               </m.div>
             ) : null}
 
